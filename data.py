@@ -18,7 +18,7 @@ class DatabaseManager:
     """
 
     def __init__(self):
-        """Инициализация менеджера БД."""
+        """Инициализация менеджера БД"""
         self.logger = Logger()
         self.connection_params = None
         self.connection = None

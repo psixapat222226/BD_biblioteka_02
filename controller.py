@@ -8,7 +8,7 @@ from data import DatabaseManager
 from logger import Logger
 
 
-class TheaterController:
+class Controller:
     """
     Основной контроллер театра, отвечающий за бизнес-логику приложения.
     Управляет актерами, постановками, бюджетом и результатами спектаклей.
