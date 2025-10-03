@@ -7,7 +7,70 @@ from PySide6.QtGui import QFont, QIntValidator
 
 
 from NumericTableItem import NumericTableItem
+from enum import Enum
 
+class Country(Enum):
+    C1 = "Россия"
+    C2 = "Великобритания"
+    C3 = "США"
+    C4 = "Франция"
+    C5 = "Германия"
+    C6 = "Италия"
+    C7 = "Китай"
+    C8 = "Япония"
+    C9 = "Испания"
+    C10 = "Польша"
+    C11 = "Чехия"
+    C12 = "Украина"
+    C13 = "Беларусь"
+    C14 = "Казахстан"
+    C15 = "Канада"
+    C16 = "Австралия"
+    C17 = "Швеция"
+    C18 = "Нидерланды"
+    C19 = "Дания"
+    C20 = "Финляндия"
+    C21 = "Норвегия"
+    C22 = "Швейцария"
+    C23 = "Австрия"
+    C24 = "Бельгия"
+    C25 = "Ирландия"
+    C26 = "Португалия"
+    C27 = "Греция"
+    C28 = "Турция"
+    C29 = "Венгрия"
+    C30 = "Румыния"
+    C31 = "Болгария"
+    C32 = "Сербия"
+    C33 = "Хорватия"
+    C34 = "Словакия"
+    C35 = "Словения"
+    C36 = "Литва"
+    C37 = "Латвия"
+    C38 = "Эстония"
+    C39 = "Грузия"
+    C40 = "Армения"
+    C41 = "Азербайджан"
+    C42 = "Узбекистан"
+    C43 = "Таджикистан"
+    C44 = "Киргизия"
+    C45 = "Молдова"
+    C46 = "Монголия"
+    C47 = "Израиль"
+    C48 = "Египет"
+    C49 = "ЮАР"
+    C50 = "Марокко"
+    C51 = "Алжир"
+    C52 = "Тунис"
+    C53 = "Индия"
+    C54 = "Пакистан"
+    C55 = "Индонезия"
+    C56 = "Вьетнам"
+    C57 = "Таиланд"
+    C58 = "Южная Корея"
+    C59 = "Бразилия"
+    C60 = "Аргентина"
+    OTHER = "Другая"
 
 class AuthorsDialog(QDialog):
     """
@@ -192,7 +255,7 @@ class AddAuthorDialog(QDialog):
             "Китай", "Япония", "Испания", "Польша", "Чехия", "Украина", "Беларусь",
             "Казахстан", "Канада", "Австралия", "Швеция", "Нидерланды", "Другая"
         ]
-        self.country_combo.addItems(countries)
+        self.country_combo.addItems([country.value for country in Country])
         layout.addRow(country_label, self.country_combo)
 
         # Кнопки
@@ -212,7 +275,6 @@ class AddAuthorDialog(QDialog):
         if not self.first_name_edit.text().strip():
             QMessageBox.warning(self, "Ошибка", "Введите имя автора")
             return
-        # birth_year_spin всегда выдаёт int, так что отдельно проверять необязательно
         if not self.country_combo.currentText().strip():
             QMessageBox.warning(self, "Ошибка", "Выберите страну автора")
             return
@@ -265,12 +327,8 @@ class EditAuthorDialog(QDialog):
         country_label.setStyleSheet(label_style)
         self.country_combo = QComboBox()
         # Пример списка стран (можешь заменить на свой)
-        countries = [
-            "Россия", "Великобритания", "США", "Франция", "Германия", "Италия",
-            "Китай", "Япония", "Испания", "Польша", "Чехия", "Украина", "Беларусь",
-            "Казахстан", "Канада", "Австралия", "Швеция", "Нидерланды", "Другая"
-        ]
-        self.country_combo.addItems(countries)
+        countries = [country.value for country in Country]
+        self.country_combo.addItems(country.value for country in Country)
         # Установить текущую страну автора, если она есть в списке
         if self.author['country'] in countries:
             self.country_combo.setCurrentText(self.author['country'])

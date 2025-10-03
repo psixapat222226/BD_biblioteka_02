@@ -7,6 +7,64 @@ from PySide6.QtCore import Qt, Signal, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator
 
 from NumericTableItem import NumericTableItem
+from enum import Enum
+
+class Genre(Enum):
+    GENRE_1 = "Роман"
+    GENRE_2 = "Фантастика"
+    GENRE_3 = "Детектив"
+    GENRE_4 = "Поэзия"
+    GENRE_5 = "Научная литература"
+    GENRE_6 = "Биография"
+    GENRE_7 = "Исторический роман"
+    GENRE_8 = "Приключения"
+    GENRE_9 = "Документальная"
+    GENRE_10 = "Драма"
+    GENRE_11 = "Триллер"
+    GENRE_12 = "Детская литература"
+    GENRE_13 = "Сказка"
+    GENRE_14 = "Комедия"
+    GENRE_15 = "Фэнтези"
+    GENRE_16 = "Манга"
+    GENRE_17 = "Психология"
+    GENRE_18 = "Бизнес"
+    GENRE_19 = "Классика"
+    GENRE_20 = "Эротика"
+    GENRE_21 = "Религия"
+    GENRE_22 = "Юмор"
+    GENRE_23 = "Ужасы"
+    GENRE_24 = "Любовный роман"
+    GENRE_25 = "Военная литература"
+    GENRE_26 = "Философия"
+    GENRE_27 = "Путешествия"
+    GENRE_28 = "Учебная литература"
+    GENRE_29 = "Компьютерная литература"
+    GENRE_30 = "Криминал"
+    GENRE_31 = "Спорт"
+    GENRE_32 = "Искусство"
+    GENRE_33 = "Музыка"
+    GENRE_34 = "Кулинария"
+    GENRE_35 = "Здоровье"
+    GENRE_36 = "Политика"
+    GENRE_37 = "Экономика"
+    GENRE_38 = "Эссе"
+    GENRE_39 = "Новелла"
+    GENRE_40 = "Басня"
+    GENRE_41 = "Сатира"
+    GENRE_42 = "Антология"
+    GENRE_43 = "Эпос"
+    GENRE_44 = "Энциклопедия"
+    GENRE_45 = "Дневник"
+    GENRE_46 = "Мемуары"
+    GENRE_47 = "Справочник"
+    GENRE_48 = "Журналистика"
+    GENRE_49 = "Вестерн"
+    GENRE_50 = "Антиутопия"
+    GENRE_51 = "Киберпанк"
+    GENRE_52 = "Космическая опера"
+    GENRE_53 = "Стимпанк"
+    GENRE_54 = "Медицина"
+    GENRE_55 = "Другое"
 
 class BooksDialog(QDialog):
     """
@@ -174,13 +232,8 @@ class EditBookDialog(QDialog):
         genre_label = QLabel("Жанр:")
         genre_label.setStyleSheet(label_style)
         self.genre_combo = QComboBox()
-        genres = [
-            "Роман", "Фантастика", "Детектив", "Поэзия", "Научная литература",
-            "Биография", "Исторический роман", "Приключения", "Документальная",
-            "Драма", "Триллер", "Детская литература", "Сказка", "Комедия",
-            "Фэнтези", "Манга", "Психология", "Бизнес", "Другое"
-        ]
-        self.genre_combo.addItems(genres)
+        genres = [genre.value for genre in Genre]
+        self.genre_combo.addItems([genre.value for genre in Genre])
         if self.book['genre'] in genres:
             self.genre_combo.setCurrentText(self.book['genre'])
         else:
@@ -280,13 +333,7 @@ class AddBookDialog(QDialog):
         genre_label = QLabel("Жанр:")
         genre_label.setStyleSheet(label_style)
         self.genre_combo = QComboBox()
-        genres = [
-            "Роман", "Фантастика", "Детектив", "Поэзия", "Научная литература",
-            "Биография", "Исторический роман", "Приключения", "Документальная",
-            "Драма", "Триллер", "Детская литература", "Сказка", "Комедия",
-            "Фэнтези", "Манга", "Психология", "Бизнес", "Другое"
-        ]
-        self.genre_combo.addItems(genres)
+        self.genre_combo.addItems([genre.value for genre in Genre])
         layout.addRow(genre_label, self.genre_combo)
 
         # ISBN

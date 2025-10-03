@@ -29,6 +29,7 @@ class ValidatedLoginLineEdit(QLineEdit):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.controller = Controller()
 
     def keyPressEvent(self, event):
         """Обработка нажатия клавиш с валидацией."""
@@ -42,12 +43,12 @@ class ValidatedLoginLineEdit(QLineEdit):
         # Проверяем валидность нового текста
         new_text = self.text()
 
-        # Паттерн для проверки - разрешены буквы, цифры, некоторые спецсимволы
-        import re
-        pattern = r'^[а-яА-Яa-zA-Z0-9\s._-]*$'
-
         # Если текст пустой, разрешаем его
-        if not new_text or re.match(pattern, new_text):
+        if not new_text:
+            return
+
+        # Используем функцию валидации
+        if self.controller.is_valid_text_input(new_text):
             return
 
         # Если текст не валиден, восстанавливаем старый текст
@@ -117,8 +118,8 @@ class LoginDialog(QDialog):
 
         # Выбор базы данных
         self.db_combo = QComboBox()
-        self.db_combo.addItem("task1")
-        self.db_combo.addItem("task2")
+        self.db_combo.addItem("test1")
+        self.db_combo.addItem("test2")
         self.db_combo.setStyleSheet("""
             QComboBox {
                 background-color: white;
@@ -141,7 +142,7 @@ class LoginDialog(QDialog):
                 image: none;
                 width: 10px;
                 height: 10px;
-                background: #4a86e8;
+                background: #00FF00;
                 border-radius: 5px;
             }
             QComboBox QAbstractItemView {
@@ -195,7 +196,7 @@ class LoginDialog(QDialog):
 
         button_style = """
             QPushButton {
-                background-color: #4a86e8;
+                background-color: green;
                 color: white;
                 border: none;
                 border-radius: 4px;
@@ -203,10 +204,10 @@ class LoginDialog(QDialog):
                 font-weight: bold;
             }
             QPushButton:hover {
-                background-color: #3a76d8;
+                background-color: #228B22;
             }
             QPushButton:pressed {
-                background-color: #2a66c8;
+                background-color: #32CD32;
             }
         """
 

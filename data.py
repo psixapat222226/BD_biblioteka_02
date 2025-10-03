@@ -51,7 +51,7 @@ class DatabaseManager:
             self.cursor = self.connection.cursor(cursor_factory=DictCursor)
             self.logger.info(f"Подключение к БД {self.connection_params['dbname']} успешно")
             return True
-        except psycopg2.Error as e:
+        except Exception as e:
             self.logger.error(f"Ошибка подключения к БД: {str(e)}")
             return False
 
@@ -730,67 +730,6 @@ class DatabaseManager:
             self.logger.error(f"Ошибка удаления книги: {str(e)}")
             return False, str(e)
 
-    def create_performance(self, title, plot_id, year, revenue):
-        """
-        Создание нового спектакля.
-
-        Args:
-            title: Название спектакля
-            plot_id: ID сюжета
-            year: Год постановки
-
-        Returns:
-            int or None: ID созданного спектакля или None при ошибке
-        """
-        try:
-            self.cursor.execute("""
-                                INSERT INTO authors (title, plot_id, year, revenue, is_completed)
-                                VALUES (%s, %s, %s, %s, FALSE) RETURNING author_id
-                                """, (title, plot_id, year, revenue))
-            author_id = self.cursor.fetchone()[0]
-            self.connection.commit()
-            self.logger.info(f"Создан спектакль с ID {author_id}")
-            return author_id
-        except Exception as e:
-            self.connection.rollback()
-            self.logger.error(f"Ошибка создания спектакля: {str(e)}")
-            return None
-
-    def complete_performance(self, author_id, revenue):
-        """
-        Завершение спектакля с указанием выручки.
-
-        Args:
-            performance_id: ID спектакля
-            revenue: Полученная выручка
-
-        Returns:
-            bool: Успешность завершения
-        """
-        try:
-            # Установка флага завершения и выручки
-            self.cursor.execute("""
-                UPDATE authors
-                SET revenue = %s, is_completed = TRUE
-                WHERE author_id = %s
-            """, (revenue, author_id))
-
-            # Увеличение опыта актеров, участвовавших в спектакле
-            self.cursor.execute("""
-                UPDATE actors a
-                SET experience = a.experience + 1
-                FROM actor_performances ap
-                WHERE a.actor_id = ap.actor_id AND ap.author_id = %s
-            """, (author_id,))
-
-            self.connection.commit()
-            self.logger.info(f"Спектакль {author_id} завершен с выручкой {revenue}")
-            return True
-        except psycopg2.Error as e:
-            self.connection.rollback()
-            self.logger.error(f"Ошибка завершения спектакля: {str(e)}")
-            return False
-
     def update_author(self, author_id, last_name, first_name, patronymic, birth_year, country):
         try:
             self.cursor.execute("""
@@ -820,27 +759,3 @@ class DatabaseManager:
             self.connection.rollback()
             self.logger.error(f"Ошибка удаления автора: {str(e)}")
             return False, str(e)
-
-    def award_actor(self, actor_id):
-        """
-        Присвоение награды актеру.
-
-        Args:
-            actor_id: ID актера
-
-        Returns:
-            bool: Успешность присвоения
-        """
-        try:
-            self.cursor.execute("""
-                UPDATE actors
-                SET awards_count = awards_count + 1
-                WHERE actor_id = %s
-            """, (actor_id,))
-            self.connection.commit()
-            self.logger.info(f"Актеру {actor_id} присвоена награда")
-            return True
-        except psycopg2.Error as e:
-            self.connection.rollback()
-            self.logger.error(f"Ошибка присвоения награды: {str(e)}")
-            return False
