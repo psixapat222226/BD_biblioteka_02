@@ -1,7 +1,4 @@
-"""
-Модуль пользовательского интерфейса для приложения "Театральный менеджер".
-Содержит классы для всех окон и диалогов приложения.
-"""
+
 import sys
 from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout,
                               QHBoxLayout, QWidget, QDialog, QMessageBox, QComboBox,
@@ -74,7 +71,7 @@ class LoginDialog(QDialog):
                 color: #333333;
             }
             QMessageBox QPushButton {
-                background-color: #4a86e8;
+                background-color: green;
                 color: white;
                 border: none;
                 border-radius: 4px;
@@ -84,10 +81,10 @@ class LoginDialog(QDialog):
                 min-height: 20px;
             }
             QMessageBox QPushButton:hover {
-                background-color: #3a76d8;
+                background-color: #228B22;
             }
             QMessageBox QPushButton:pressed {
-                background-color: #2a66c8;
+                background-color: #32CD32;
             }
         """
 
@@ -334,43 +331,51 @@ class LoginDialog(QDialog):
 
         # Установка параметров подключения
         self.controller.set_connection_params(dbname, user, password, host, port)
+        try:
+            # Попытка создания базы данных
+            if self.controller.create_database():
+                # Запрос на создание схемы и таблиц
+                reply_box = QMessageBox(self)
+                reply_box.setWindowTitle("База данных создана")
+                reply_box.setText("База данных успешно создана. Хотите создать схемы и таблицы?")
+                reply_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+                reply_box.setIcon(QMessageBox.Question)
+                reply_box.setStyleSheet(self.message_box_style)
+                reply = reply_box.exec()
 
-        # Попытка создания базы данных
-        if self.controller.create_database():
-            # Запрос на создание схемы и таблиц
-            reply_box = QMessageBox(self)
-            reply_box.setWindowTitle("База данных создана")
-            reply_box.setText("База данных успешно создана. Хотите создать схемы и таблицы?")
-            reply_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            reply_box.setIcon(QMessageBox.Question)
-            reply_box.setStyleSheet(self.message_box_style)
-            reply = reply_box.exec()
-
-            if reply == QMessageBox.Yes:
-                # Подключение и инициализация базы данных
-                if self.controller.connect_to_database() and self.controller.initialize_database():
-                    success_box = QMessageBox(self)
-                    success_box.setWindowTitle("Успех")
-                    success_box.setText("База данных, схема и таблицы успешно созданы")
-                    success_box.setIcon(QMessageBox.Information)
-                    success_box.setStyleSheet(self.message_box_style)
-                    success_box.exec()
-                    self.accept()
+                if reply == QMessageBox.Yes:
+                    # Подключение и инициализация базы данных
+                    if self.controller.connect_to_database() and self.controller.initialize_database():
+                        success_box = QMessageBox(self)
+                        success_box.setWindowTitle("Успех")
+                        success_box.setText("База данных, схема и таблицы успешно созданы")
+                        success_box.setIcon(QMessageBox.Information)
+                        success_box.setStyleSheet(self.message_box_style)
+                        success_box.exec()
+                        self.accept()
+                    else:
+                        err_box = QMessageBox(self)
+                        err_box.setWindowTitle("Ошибка")
+                        err_box.setText("Не удалось создать схему базы данных")
+                        err_box.setIcon(QMessageBox.Critical)
+                        err_box.setStyleSheet(self.message_box_style)
+                        err_box.exec()
                 else:
-                    err_box = QMessageBox(self)
-                    err_box.setWindowTitle("Ошибка")
-                    err_box.setText("Не удалось создать схему базы данных")
-                    err_box.setIcon(QMessageBox.Critical)
-                    err_box.setStyleSheet(self.message_box_style)
-                    err_box.exec()
+                    # Пользователь отказался создавать схемы и таблицы
+                    return
             else:
-                # Пользователь отказался создавать схемы и таблицы
-                return
-        else:
-            # Ошибка создания базы данных
+                # Ошибка создания базы данных
+                err_box = QMessageBox(self)
+                err_box.setWindowTitle("Ошибка")
+                err_box.setText("Не удалось создать базу данных")
+                err_box.setIcon(QMessageBox.Critical)
+                err_box.setStyleSheet(self.message_box_style)
+                err_box.exec()
+
+        except Exception as e:
             err_box = QMessageBox(self)
             err_box.setWindowTitle("Ошибка")
-            err_box.setText("Не удалось создать базу данных")
+            err_box.setText(f"Ошибка при создании базы данных:\n{str(e)}")
             err_box.setIcon(QMessageBox.Critical)
             err_box.setStyleSheet(self.message_box_style)
             err_box.exec()
@@ -738,22 +743,6 @@ class MainWindow(QMainWindow):
         """Обработка события закрытия окна."""
         self.controller.close()
         event.accept()
-
-class RankTableItem(QTableWidgetItem):
-    """
-    Элемент таблицы для званий актеров с правильной сортировкой.
-    """
-
-    def __init__(self, text):
-        super().__init__(text)
-        rank_order = ['Начинающий', 'Постоянный', 'Ведущий', 'Мастер', 'Заслуженный', 'Народный']
-        self.rank_index = rank_order.index(text) if text in rank_order else -1
-
-    def __lt__(self, other):
-        """Сравнение по порядку званий, а не по алфавиту."""
-        if isinstance(other, RankTableItem):
-            return self.rank_index < other.rank_index
-        return super().__lt__(other)
 
 class CurrencyTableItem(QTableWidgetItem):
     """
