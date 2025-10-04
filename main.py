@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     # Создание и настройка приложения Qt
     app = QApplication(sys.argv)
-    app.setApplicationName("Театральный менеджер")
+    app.setApplicationName("Библиотека")
 
     # Показ диалога авторизации
     login_dialog = LoginDialog()

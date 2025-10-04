@@ -1,7 +1,3 @@
-"""
-Модуль управления театральными постановками.
-Содержит основную бизнес-логику приложения.
-"""
 import random
 import re
 from data import DatabaseManager
@@ -10,8 +6,7 @@ from logger import Logger
 
 class Controller:
     """
-    Основной контроллер театра, отвечающий за бизнес-логику приложения.
-    Управляет актерами, постановками, бюджетом и результатами спектаклей.
+    Основной контроллер библиотеки
     """
     def __init__(self):
         """Инициализация контроллера."""
@@ -47,7 +42,7 @@ class Controller:
         return self.db.reset_schema()
 
     def get_all_readers(self):
-        """Получение списка всех актеров."""
+        """Получение списка всех читателей"""
         return self.db.get_readers()
 
     def get_all_books(self):
@@ -67,47 +62,47 @@ class Controller:
         return self.db.get_authors()
 
     def add_new_reader(self, last_name, first_name, patronymic, ticket_number, registration_date):
-        """Добавление нового читателя в базу данных."""
+        """Добавление нового читателя в базу данных"""
         return self.db.add_reader(last_name, first_name, patronymic, ticket_number, registration_date)
 
     def add_new_book(self, title, publication_year, genre, isbn, available_copies):
-        """Добавление новой книги в базу данных."""
+        """Добавление новой книги в базу данных"""
         return self.db.add_book(title, publication_year, genre, isbn, available_copies)
 
     def add_new_issue(self, book_id, reader_id, issue_date, return_date):
-        """Добавление нового заказа (выдачи книги) в базу данных."""
+        """Добавление нового заказа (выдачи книги) в базу данных"""
         return self.db.add_issue(book_id, reader_id, issue_date, return_date)
 
     def add_new_book_author(self, book_id, author_id):
-        """Добавление новой связи книга–автор в базу данных."""
+        """Добавление новой связи книга–автор в базу данных"""
         return self.db.add_book_author(book_id, author_id)
 
     def add_new_author(self, last_name, first_name, patronymic, birth_year, country):
-        """Добавление нового автора в базу данных."""
+        """Добавление нового автора в базу данных"""
         return self.db.add_author(last_name, first_name, patronymic, birth_year, country)
 
     def update_reader(self, reader_id, last_name, first_name, patronymic, ticket_number, registration_date):
-        """Обновление данных читателя."""
+        """Обновление данных читателя"""
         return self.db.update_reader(reader_id, last_name, first_name, patronymic, ticket_number, registration_date)
 
     def update_book(self, book_id, title, publication_year, genre, isbn, available_copies):
-        """Обновление данных книги."""
+        """Обновление данных книги"""
         return self.db.update_book(book_id, title, publication_year, genre, isbn, available_copies)
 
     def update_issue(self, issue_id, book_id, reader_id, issue_date, return_date):
-        """Обновление данных заказа (выдачи книги)."""
+        """Обновление данных заказа (выдачи книги)"""
         return self.db.update_issue(issue_id, book_id, reader_id, issue_date, return_date)
 
     def update_book_author(self, old_book_id, old_author_id, new_book_id, new_author_id):
-        """Обновление связи книга–автор в базе данных."""
+        """Обновление связи книга–автор в базе данных"""
         return self.db.update_book_author(old_book_id, old_author_id, new_book_id, new_author_id)
 
     def delete_reader_by_id(self, reader_id):
-        """Удаление читателя по его ID."""
+        """Удаление читателя по его ID"""
         return self.db.delete_reader(reader_id)
 
     def delete_book_author_by_id(self, book_id, author_id):
-        """Удаление связи книга–автор по ключу (book_id, author_id)."""
+        """Удаление связи книга–автор по ключу (book_id, author_id)"""
         return self.db.delete_book_author(book_id, author_id)
 
     def delete_book_by_id(self, book_id):
@@ -115,7 +110,7 @@ class Controller:
         return self.db.delete_book(book_id)
 
     def delete_issue_by_id(self, issue_id):
-        """Удаление зазак по ID"""
+        """Удаление зазака по ID"""
         return self.db.delete_issue(issue_id)
 
     def is_valid_text_input(self, text):

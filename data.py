@@ -1,7 +1,4 @@
-"""
-Модуль для работы с данными театра в базе данных PostgreSQL.
-Содержит классы для хранения, доступа и манипуляции данными.
-"""
+
 import psycopg2
 from psycopg2 import sql, extensions
 from psycopg2.extras import DictCursor
@@ -12,7 +9,7 @@ from logger import Logger
 
 class DatabaseManager:
     """
-    Менеджер базы данных театра.
+    Менеджер базы данных
     Отвечает за взаимодействие с PostgreSQL, выполнение запросов
     и преобразование данных.
     """
@@ -56,12 +53,6 @@ class DatabaseManager:
             return False
 
     def connect_to_postgres(self):
-        """
-        Подключение к системной базе данных postgres для создания новой БД.
-
-        Returns:
-            tuple: (соединение, курсор) или (None, None) при ошибке
-        """
         if self.connection_params is None:
             self.logger.error("Параметры подключения не установлены")
             return False
@@ -244,11 +235,11 @@ class DatabaseManager:
 
             # Добавление связей книг с авторами
             book_authors = [
-                (1, 1),  # Евгений Онегин - Пушкин
-                (2, 2),  # Война и мир - Толстой
-                (3, 3),  # Преступление и наказание - Достоевский
-                (4, 4),  # 1984 - Оруэлл
-                (5, 5)  # Гарри Поттер - Роулинг
+                (1, 1),
+                (2, 2),
+                (3, 3),
+                (4, 4),
+                (5, 5)
             ]
             for ba in book_authors:
                 self.cursor.execute("""
@@ -384,15 +375,7 @@ class DatabaseManager:
             return []
 
     def get_authors(self, year=None):
-        """
-        Получение списка всех спектаклей с возможностью фильтрации по году.
 
-        Args:
-            year: Год для фильтрации (опционально)
-
-        Returns:
-            list: Список словарей с данными спектаклей
-        """
         try:
             self.cursor.execute("SELECT * FROM authors ORDER BY author_id")
             return self.cursor.fetchall()
