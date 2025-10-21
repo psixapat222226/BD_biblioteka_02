@@ -1,22 +1,20 @@
-
-import sys
 from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout,
                               QHBoxLayout, QWidget, QDialog, QMessageBox, QComboBox,
                               QSpinBox, QTableWidget, QTableWidgetItem, QLineEdit, QDateEdit,
                               QFormLayout, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit)
-from PySide6.QtCore import Qt, Signal, QTimer, QDate
+from PySide6.QtCore import Qt, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator
 
 
-from NumericTableItem import NumericTableItem
-from authors import AuthorsDialog
-from books import BooksDialog
-from readers import ReadersDialog
-from issues import IssuesDialog
-from bookauthors import BookAuthorsDialog
-from data import DatabaseManager
+
+from BD_biblioteka_02.ui.dialogs.authors import AuthorsDialog
+from BD_biblioteka_02.ui.dialogs.books import BooksDialog
+from BD_biblioteka_02.ui.dialogs.readers import ReadersDialog
+from BD_biblioteka_02.ui.dialogs.issues import IssuesDialog
+from BD_biblioteka_02.ui.dialogs.bookauthors import BookAuthorsDialog
+from BD_biblioteka_02.core.data import DatabaseManager
 from validators import TextValidator
-from logger import Logger
+from BD_biblioteka_02.core.logger import Logger
 
 
 class ValidatedLoginLineEdit(QLineEdit):
@@ -960,33 +958,3 @@ class CurrencyTableItem(QTableWidgetItem):
         if hasattr(other, 'value'):
             return self.value < other.value
         return super().__lt__(other)
-
-class ValidatedLineEdit(QLineEdit):
-    """
-    Поле ввода с валидацией текста.
-    Разрешает только определенные символы, заданные в контроллере.
-    """
-
-    def __init__(self, controller, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.controller = controller
-
-    def keyPressEvent(self, event):
-        """Обработка нажатия клавиш с валидацией."""
-        # Сохраняем текущий текст и позицию курсора
-        old_text = self.text()
-        cursor_pos = self.cursorPosition()
-
-        # Вызываем стандартную обработку нажатия клавиш
-        super().keyPressEvent(event)
-
-        # Проверяем валидность нового текста
-        new_text = self.text()
-
-        # Если текст пустой, разрешаем его
-        if not new_text or self.controller.is_valid_text_input(new_text):
-            return
-
-        # Если текст не валиден, восстанавливаем старый текст
-        self.setText(old_text)
-        self.setCursorPosition(cursor_pos)

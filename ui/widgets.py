@@ -1,6 +1,6 @@
 
 from PySide6.QtWidgets import QTableWidgetItem, QLineEdit
-from validators import TextValidator
+from ..validators import TextValidator
 
 class NumericTableItem(QTableWidgetItem):
     """
