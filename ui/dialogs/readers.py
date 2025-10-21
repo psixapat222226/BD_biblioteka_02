@@ -4,6 +4,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, Q
                               QFormLayout, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit)
 from PySide6.QtCore import Qt, Signal, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator
+from ..styles import get_form_label_style
 from ...core.additional_classes import NumericTableItem, ValidatedLineEdit
 
 class ReadersDialog(QDialog):
@@ -194,7 +195,7 @@ class AddReaderDialog(QDialog):
 
     def setup_ui(self):
         layout = QFormLayout(self)
-        label_style = "color: #333333; font-weight: bold;"
+        label_style = get_form_label_style()
 
         # Фамилия
         last_name_label = QLabel("Фамилия:")
@@ -281,7 +282,7 @@ class EditReaderDialog(QDialog):
         layout = QFormLayout(self)
 
         # Стиль для меток
-        label_style = "color: #333333; font-weight: bold;"
+        label_style = get_form_label_style()
 
         # Поля для ввода данных читателя
         # Фамилия

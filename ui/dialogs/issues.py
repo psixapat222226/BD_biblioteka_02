@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, Q
 from PySide6.QtCore import Qt, Signal, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator
 from ...core.additional_classes import NumericTableItem
+from ..styles import get_form_label_style
 
 class IssuesDialog(QDialog):
     """
@@ -165,7 +166,7 @@ class AddIssueDialog(QDialog):
 
     def setup_ui(self):
         layout = QFormLayout(self)
-        label_style = "color: #333333; font-weight: bold;"
+        label_style = get_form_label_style()
 
         # Получаем список книг и читателей
         self.books = self.controller.get_books()    # список словарей книг
@@ -262,7 +263,7 @@ class EditIssueDialog(QDialog):
 
     def setup_ui(self):
         layout = QFormLayout(self)
-        label_style = "color: #333333; font-weight: bold;"
+        label_style = get_form_label_style()
 
         # Получаем список книг и читателей
         self.books = self.controller.get_books()

@@ -7,6 +7,7 @@ from PySide6.QtCore import Qt, Signal, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator
 
 from ...core.additional_classes import NumericTableItem
+from ..styles import get_form_label_style
 from ...core.enums import Genre
 
 class BooksDialog(QDialog):
@@ -157,7 +158,7 @@ class EditBookDialog(QDialog):
 
     def setup_ui(self):
         layout = QFormLayout(self)
-        label_style = "color: #333333; font-weight: bold;"
+        label_style = get_form_label_style()
 
         # Название
         title_label = QLabel("Название:")
@@ -256,7 +257,7 @@ class AddBookDialog(QDialog):
 
     def setup_ui(self):
         layout = QFormLayout(self)
-        label_style = "color: #333333; font-weight: bold;"
+        label_style = get_form_label_style()
 
         # Название
         title_label = QLabel("Название:")

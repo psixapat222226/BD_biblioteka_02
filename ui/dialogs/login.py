@@ -8,6 +8,7 @@ from PySide6.QtGui import QFont, QIntValidator
 from BD_biblioteka_02.core.data import DatabaseManager
 from BD_biblioteka_02.core.additional_classes import TextValidator
 from BD_biblioteka_02.core.logger import Logger
+from ..styles import get_message_box_style, get_form_label_style, get_combobox_style, get_button_style
 
 
 class ValidatedLoginLineEdit(QLineEdit):
@@ -55,31 +56,7 @@ class LoginDialog(QDialog):
         self.logger = Logger()
 
         # Единый стиль для всех диалоговых окон сообщений
-        self.message_box_style = """
-            QMessageBox {
-                background-color: #f5f5f5;
-            }
-            QMessageBox QLabel {
-                color: #333333;
-            }
-            QMessageBox QPushButton {
-                background-color: green;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                padding: 4px 8px;
-                font-weight: bold;
-                min-width: 40px;
-                min-height: 20px;
-            }
-            QMessageBox QPushButton:hover {
-                background-color: #228B22;
-            }
-            QMessageBox QPushButton:pressed {
-                background-color: #32CD32;
-            }
-        """
-
+        self.message_box_style = get_message_box_style()
         self.setup_ui()
 
     def setup_ui(self):
@@ -103,47 +80,13 @@ class LoginDialog(QDialog):
 
         # Форма для ввода параметров
         form_layout = QFormLayout()
-        form_label_style = "color: #333333; font-weight: bold;"
+        form_label_style = get_form_label_style()
 
         # Выбор базы данных
         self.db_combo = QComboBox()
         self.db_combo.addItem("test1")
         self.db_combo.addItem("test2")
-        self.db_combo.setStyleSheet("""
-            QComboBox {
-                background-color: white;
-                color: black;
-                border: 1px solid #c0c0c0;
-                border-radius: 4px;
-                padding: 6px;
-                min-height: 5px;
-                min-width: 88px;
-            }
-            QComboBox::drop-down {
-                subcontrol-origin: padding;
-                subcontrol-position: top right;
-                width: 20px;
-                border-left: 1px solid #c0c0c0;
-                border-top-right-radius: 4px;
-                border-bottom-right-radius: 4px;
-            }
-            QComboBox::down-arrow {
-                image: none;
-                width: 10px;
-                height: 10px;
-                background: #00FF00;
-                border-radius: 5px;
-            }
-            QComboBox QAbstractItemView {
-                border: 1px solid #c0c0c0;
-                border-radius: 4px;
-                background-color: white;
-                color: black;
-                selection-background-color: #d0e8ff;
-                selection-color: black;
-                padding: 4px;
-            }
-        """)
+        self.db_combo.setStyleSheet(get_combobox_style())
         db_label = QLabel("База данных:")
         db_label.setStyleSheet(form_label_style)
         form_layout.addRow(db_label, self.db_combo)
@@ -183,39 +126,24 @@ class LoginDialog(QDialog):
         # Кнопки действий
         buttons_layout = QHBoxLayout()
 
-        button_style = """
-            QPushButton {
-                background-color: green;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                padding: 8px 16px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #228B22;
-            }
-            QPushButton:pressed {
-                background-color: #32CD32;
-            }
-        """
+
 
         # Кнопка подключения
         self.connect_btn = QPushButton("Подключиться")
         self.connect_btn.clicked.connect(self.try_connect)
-        self.connect_btn.setStyleSheet(button_style)
+        self.connect_btn.setStyleSheet(get_button_style())
         buttons_layout.addWidget(self.connect_btn)
 
         # Кнопка создания БД
         self.create_db_btn = QPushButton("Создать БД")
         self.create_db_btn.clicked.connect(self.create_database)
-        self.create_db_btn.setStyleSheet(button_style)
+        self.create_db_btn.setStyleSheet(get_button_style())
         buttons_layout.addWidget(self.create_db_btn)
 
         # Кнопка выхода
         self.exit_btn = QPushButton("Выход")
         self.exit_btn.clicked.connect(self.reject)
-        self.exit_btn.setStyleSheet(button_style)
+        self.exit_btn.setStyleSheet(get_button_style())
         buttons_layout.addWidget(self.exit_btn)
 
         layout.addLayout(buttons_layout)

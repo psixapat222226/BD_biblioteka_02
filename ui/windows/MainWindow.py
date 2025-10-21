@@ -10,6 +10,7 @@ from ..dialogs.readers import ReadersDialog
 from ..dialogs.books import BooksDialog
 from ..dialogs.issues import IssuesDialog
 from BD_biblioteka_02.core.logger import Logger
+from ..styles import (get_light_theme_style, get_dark_theme_style, get_log_display_style, get_title_style)
 
 class MainWindow(QMainWindow):
     """
@@ -25,16 +26,12 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Библиотека")
         self.setMinimumSize(900, 600)
-
-        # Установка стилей для всего приложения
-        self.set_application_style()
-
         # Инициализация интерфейса
         self.setup_ui()
-
+        # Установка стилей для всего приложения
+        self.set_application_style()
         # Загрузка логов и обновление информации
         self.load_logs()
-
         self.logger.info("Главное окно инициализировано")
 
     def setup_ui(self):
@@ -51,7 +48,7 @@ class MainWindow(QMainWindow):
         title_font.setPointSize(24)
         title_font.setBold(True)
         title_label.setFont(title_font)
-        title_label.setStyleSheet("color: green; margin: 10px;")
+        title_label.setStyleSheet(get_log_display_style())
         main_layout.addWidget(title_label)
 
         # Панель кнопок
@@ -66,7 +63,7 @@ class MainWindow(QMainWindow):
         log_layout = QVBoxLayout(log_tab)
         self.log_display = QTextEdit()
         self.log_display.setReadOnly(True)
-        self.log_display.setStyleSheet("background-color: black; color: green; ")
+        self.log_display.setStyleSheet(get_log_display_style())
         log_layout.addWidget(self.log_display)
         self.data_tabs.addTab(log_tab, "Логи")
         self.data_tabs.setCurrentIndex(0)
@@ -78,22 +75,9 @@ class MainWindow(QMainWindow):
         bottom_btn_layout = QHBoxLayout()
         bottom_btn_layout.addStretch()
 
-        # Кнопка переключения темы - ДОБАВЬТЕ ЭТУ КНОПКУ
+        # Кнопка переключения темы
         self.theme_btn = QPushButton("Темная тема")
         self.theme_btn.clicked.connect(self.toggle_theme)
-        self.theme_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #6c757d;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                padding: 8px 16px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #5a6268;
-            }
-        """)
         bottom_btn_layout.addWidget(self.theme_btn)
 
         self.reset_db_btn = QPushButton("Обновить данные")
@@ -114,173 +98,15 @@ class MainWindow(QMainWindow):
 
     def apply_dark_theme(self):
         # Применение темной темы
-        dark_style = """
-        QMainWindow, QDialog {
-            background-color: #2b2b2b;
-            color: #ffffff;
-        }
-        QPushButton {
-            background-color: #495057;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 16px;
-            font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #6c757d;
-        }
-        QPushButton:pressed {
-            background-color: #5a6268;
-        }
-        QLabel {
-            color: #ffffff;
-        }
-        QTableWidget {
-            background-color: #3c3f41;
-            color: #ffffff;
-            border: 1px solid #555555;
-            gridline-color: #555555;
-        }
-        QTableWidget::item:selected {
-            background-color: #2e6f40;
-            color: #ffffff;
-        }
-        QHeaderView::section {
-            background-color: #495057;
-            color: #ffffff;
-            padding: 4px;
-            border: 1px solid #555555;
-            font-weight: bold;
-        }
-        QTabWidget::pane {
-            border: 1px solid #555555;
-            background-color: #3c3f41;
-        }
-        QTabBar::tab {
-            background-color: #495057;
-            color: #ffffff;
-            padding: 8px 12px;
-            border: 1px solid #555555;
-            border-bottom: none;
-            border-top-left-radius: 4px;
-            border-top-right-radius: 4px;
-        }
-        QTabBar::tab:selected {
-            background-color: #3c3f41;
-            font-weight: bold;
-        }
-        QComboBox {
-            background-color: #495057;
-            color: #ffffff;
-            border: 1px solid #555555;
-            border-radius: 4px;
-            padding: 6px;
-            min-height: 25px;
-        }
-        QComboBox::drop-down {
-            subcontrol-origin: padding;
-            subcontrol-position: top right;
-            width: 20px;
-            border-left: 1px solid #555555;
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
-        QComboBox::down-arrow {
-            image: none;
-            width: 10px;
-            height: 10px;
-            background: #28a745;
-            border-radius: 5px;
-        }
-        QComboBox QAbstractItemView {
-            border: 1px solid #555555;
-            border-radius: 4px;
-            background-color: #495057;
-            color: #ffffff;
-            selection-background-color: #2e6f40;
-            selection-color: #ffffff;
-            padding: 4px;
-        }
-        QLineEdit {
-            background-color: #495057;
-            color: #ffffff;
-            border: 1px solid #555555;
-            padding: 4px;
-            min-width: 120px;
-        }
-        QTextEdit {
-            background-color: #495057;
-            color: #ffffff;
-            border: 1px solid #555555;
-            padding: 2px;
-        }
-        QSpinBox {
-            background-color: #495057;
-            color: #ffffff;
-            border: 1px solid #555555;
-            border-radius: 4px;
-            padding: 1px 1px 1px 4px;
-            min-width: 80px;
-            max-height: 22px;
-        }
-        QSpinBox::up-button, QSpinBox::down-button {
-            background-color: #6c757d;
-            width: 16px;
-            border: none;
-            border-left: 1px solid #555555;
-        }
-        QSpinBox::up-button {
-            border-top-right-radius: 3px;
-            border-bottom: 1px solid #555555;
-        }
-        QSpinBox::down-button {
-            border-bottom-right-radius: 3px;
-        }
-        QSpinBox::up-button:hover, QSpinBox::down-button:hover {
-            background-color: #2e6f40;
-        }
-        QSpinBox::up-button:pressed, QSpinBox::down-button:pressed {
-            background-color: #28a745;
-        }
-        QSpinBox::up-arrow, QSpinBox::down-arrow {
-            width: 6px;
-            height: 6px;
-            background: #28a745;
-        }
-        QSpinBox:focus {
-            border: 1px solid #28a745;
-        }
-        QMessageBox {
-            background-color: #3c3f41;
-            color: #ffffff;
-        }
-        QMessageBox QLabel {
-            color: #ffffff;
-        }
-        QMessageBox QPushButton {
-            background-color: #495057;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-weight: bold;
-            min-width: 40px;
-            min-height: 20px;
-        }
-        QMessageBox QPushButton:hover {
-            background-color: #6c757d;
-        }
-        """
-        self.setStyleSheet(dark_style)
+        self.setStyleSheet(get_dark_theme_style())
 
         # Особые стили для элементов, которые требуют индивидуальной настройки
-        self.log_display.setStyleSheet("background-color: #1e1e1e; color: #00ff00;")
+        self.log_display.setStyleSheet(get_log_display_style("dark"))
 
         # Обновить заголовок
         title_label = self.central_widget.findChild(QLabel)
         if title_label:
-            title_label.setStyleSheet("color: #28a745; margin: 10px;")
+            title_label.setStyleSheet(get_title_style("dark"))
 
     def toggle_theme(self):
         # Переключение между светлой и темной темой
@@ -349,141 +175,13 @@ class MainWindow(QMainWindow):
 
     def set_application_style(self):
         """Установка единого стиля для всего приложения."""
-        app_style = """
-        QMainWindow, QDialog {
-            background-color: #f5f5f5;
-        }
-        QPushButton {
-            background-color: green;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 16px;
-            font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #2E6F40;
-        }
-        QPushButton:pressed {
-            background-color: #2E6F40;
-        }
-        QLabel {
-            color: #333333;
-        }
-        QTableWidget {
-            border: 1px solid #d0d0d0;
-            gridline-color: #e0e0e0;
-        }
-        QTableWidget::item:selected {
-            background-color: #d0e8ff;
-        }
-        QHeaderView::section {
-            background-color: #e0e0e0;
-            color: #333333;
-            padding: 4px;
-            border: 1px solid #c0c0c0;
-            font-weight: bold;
-        }
-        QTabWidget::pane {
-            border: 1px solid #c0c0c0;
-            background-color: white;
-        }
-        QTabBar::tab {
-            background-color: #e0e0e0;
-            color: #333333;
-            padding: 8px 12px;
-            border: 1px solid #c0c0c0;
-            border-bottom: none;
-            border-top-left-radius: 4px;
-            border-top-right-radius: 4px;
-        }
-        QTabBar::tab:selected {
-            background-color: white;
-            font-weight: bold;
-        }
-        QComboBox {
-            background-color: white;
-            color: #333333;
-            border: 1px solid #c0c0c0;
-            border-radius: 4px;
-            padding: 6px;
-            min-height: 25px;
-        }
-        QComboBox::drop-down {
-            subcontrol-origin: padding;
-            subcontrol-position: top right;
-            width: 20px;
-            border-left: 1px solid #c0c0c0;
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
-        QComboBox::down-arrow {
-            image: none;
-            width: 10px;
-            height: 10px;
-            background: #4a86e8;
-            border-radius: 5px;
-        }
-        QComboBox QAbstractItemView {
-            border: 1px solid #c0c0c0;
-            border-radius: 4px;
-            background-color: white;
-            color: #333333;
-            selection-background-color: #d0e8ff;
-            selection-color: #333333;
-            padding: 4px;
-        }
-        QLineEdit {
-            background-color: white;
-            color: #333333;
-            border: 1px solid #c0c0c0;
-            padding: 4px;
-            min-width: 120px;
-        }
-        QTextEdit {
-            border: 1px solid #c0c0c0;
-            padding: 2px;
-        }
-        QSpinBox {
-            background-color: white;
-            color: #333333;
-            border: 1px solid #c0c0c0;
-            border-radius: 4px;
-            padding: 1px 1px 1px 4px;
-            min-width: 80px;
-            max-height: 22px;
-        }
-        QSpinBox::up-button, QSpinBox::down-button {
-            background-color: #e8e8e8;
-            width: 16px;
-            border: none;
-            border-left: 1px solid #c0c0c0;
-        }
-        QSpinBox::up-button {
-            border-top-right-radius: 3px;
-            border-bottom: 1px solid #c0c0c0;
-        }
-        QSpinBox::down-button {
-            border-bottom-right-radius: 3px;
-        }
-        QSpinBox::up-button:hover, QSpinBox::down-button:hover {
-            background-color: #d0e8ff;
-        }
-        QSpinBox::up-button:pressed, QSpinBox::down-button:pressed {
-            background-color: #4a86e8;
-        }
-        QSpinBox::up-arrow, QSpinBox::down-arrow {
-            width: 6px;
-            height: 6px;
-            background: #4a86e8;
-        }
-        QSpinBox:focus {
-            border: 1px solid #4a86e8;
-        }
+        self.setStyleSheet(get_light_theme_style())
+        self.log_display.setStyleSheet(get_log_display_style("light"))
 
-        """
-
-        self.setStyleSheet(app_style)
+        # Обновить заголовок
+        title_label = self.central_widget.findChild(QLabel)
+        if title_label:
+            title_label.setStyleSheet(get_title_style("light"))
 
     def reset_database(self):
         """Сброс данных базы данных к начальному состоянию."""

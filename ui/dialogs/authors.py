@@ -7,6 +7,7 @@ from PySide6.QtGui import QFont, QIntValidator
 
 from ...core.enums import Country
 from ...core.additional_classes import NumericTableItem
+from ..styles import get_form_label_style
 
 class AuthorsDialog(QDialog):
     """
@@ -153,7 +154,7 @@ class AddAuthorDialog(QDialog):
 
     def setup_ui(self):
         layout = QFormLayout(self)
-        label_style = "color: #333333; font-weight: bold;"
+        label_style = get_form_label_style()
 
         # Фамилия
         last_name_label = QLabel("Фамилия:")
@@ -232,7 +233,7 @@ class EditAuthorDialog(QDialog):
 
     def setup_ui(self):
         layout = QFormLayout(self)
-        label_style = "color: #333333; font-weight: bold;"
+        label_style = get_form_label_style()
 
         # Фамилия
         last_name_label = QLabel("Фамилия:")
