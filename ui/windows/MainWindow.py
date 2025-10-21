@@ -9,6 +9,7 @@ from ..dialogs.authors import AuthorsDialog
 from ..dialogs.readers import ReadersDialog
 from ..dialogs.books import BooksDialog
 from ..dialogs.issues import IssuesDialog
+from BD_biblioteka_02.core.logger import Logger
 
 class MainWindow(QMainWindow):
     """

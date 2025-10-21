@@ -1,6 +1,6 @@
-
+import re
 from PySide6.QtWidgets import QTableWidgetItem, QLineEdit
-from ..validators import TextValidator
+
 
 class NumericTableItem(QTableWidgetItem):
     """
@@ -46,3 +46,20 @@ class ValidatedLineEdit(QLineEdit):
         self.setText(old_text)
         self.setCursorPosition(cursor_pos)
 
+
+class TextValidator:
+    """Класс для валидации текстовых входных данных."""
+
+    @staticmethod
+    def is_valid_text_input(text):
+        """
+        Проверка валидности текстового ввода.
+        Разрешены только буквы (кириллица и латиница), цифры и пробелы.
+
+        Args:
+            text (str): Текст для проверки
+
+        Returns:
+            bool: True если текст валиден, False в противном случае
+        """
+        return bool(re.match(r'^[а-яА-Яa-zA-Z0-9\s]*$', text))

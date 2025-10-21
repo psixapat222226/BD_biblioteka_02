@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, Q
                               QFormLayout, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit)
 from PySide6.QtCore import Qt, Signal, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator
-from ..widgets import NumericTableItem
+from ...core.additional_classes import NumericTableItem
 
 class IssuesDialog(QDialog):
     """

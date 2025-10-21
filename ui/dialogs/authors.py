@@ -6,7 +6,7 @@ from PySide6.QtCore import Qt, Signal, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator
 
 from ...core.enums import Country
-from ..widgets import NumericTableItem
+from ...core.additional_classes import NumericTableItem
 
 class AuthorsDialog(QDialog):
     """
