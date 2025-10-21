@@ -14,7 +14,7 @@ class ReadersDialog(QDialog):
     def __init__(self, controller, parent=None):
         super().__init__(parent)
         self.controller = controller
-        self.all_readers = controller.get_all_readers()
+        self.all_readers = controller.get_readers()
 
         self.setWindowTitle("Читатели")
         self.setMinimumSize(800, 600)
@@ -69,7 +69,7 @@ class ReadersDialog(QDialog):
     def update_readers_table(self):
         """Обновление содержимого таблицы читателей"""
         # Получение актуального списка читателей
-        self.all_readers = self.controller.get_all_readers()
+        self.all_readers = self.controller.get_readers()
         self.readers_table.setRowCount(len(self.all_readers))
 
         # Временно отключаем сортировку для заполнения таблицы
@@ -109,7 +109,7 @@ class ReadersDialog(QDialog):
             registration_date = dialog.registration_date_edit.text().strip()
 
             # Добавление читателя в БД
-            reader_id = self.controller.add_new_reader(
+            reader_id = self.controller.add_reader(
                 last_name, first_name, patronymic, ticket_number, registration_date
             )
 
@@ -171,7 +171,7 @@ class ReadersDialog(QDialog):
 
         if confirm == QMessageBox.Yes:
             # Удаление читателя из БД
-            success, message = self.controller.delete_reader_by_id(reader_id)
+            success, message = self.controller.delete_reader(reader_id)
 
             if success:
                 # Обновление таблицы при успешном удалении

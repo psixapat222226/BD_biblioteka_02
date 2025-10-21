@@ -111,7 +111,7 @@ class BooksDialog(QDialog):
         title_label = QLabel("<h2>Книги</h2>")
         title_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(title_label)
-        self.books = self.controller.get_all_books()
+        self.books = self.controller.get_books()
         if not self.books:
             empty_label = QLabel("Книг нет.")
             empty_label.setAlignment(Qt.AlignCenter)
@@ -140,7 +140,7 @@ class BooksDialog(QDialog):
         layout.addLayout(buttons_layout)
 
     def update_books_table(self):
-        self.books = self.controller.get_all_books()
+        self.books = self.controller.get_books()
         self.books_table.setRowCount(len(self.books))
         for i, book in enumerate(self.books):
             id_item = NumericTableItem(str(book['book_id']), book['book_id'])
@@ -164,7 +164,7 @@ class BooksDialog(QDialog):
             genre = dialog.genre_combo.currentText()
             isbn = dialog.isbn_edit.text().strip()
             copies = int(dialog.copies_spin.value())
-            success = self.controller.add_new_book(
+            success = self.controller.add_book(
                 title,
                 year,
                 genre,

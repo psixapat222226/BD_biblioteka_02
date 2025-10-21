@@ -116,7 +116,7 @@ class AuthorsDialog(QDialog):
         title_label = QLabel("<h2>Авторы</h2>")
         title_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(title_label)
-        self.authors = self.controller.get_all_authors()
+        self.authors = self.controller.get_authors()
         if not self.authors:
             empty_label = QLabel("Авторов нет.")
             empty_label.setAlignment(Qt.AlignCenter)
@@ -145,7 +145,7 @@ class AuthorsDialog(QDialog):
         layout.addLayout(buttons_layout)
 
     def update_authors_table(self):
-        self.authors = self.controller.get_all_authors()
+        self.authors = self.controller.get_authors()
         self.author_table.setRowCount(len(self.authors))
         for i, auth in enumerate(self.authors):
             id_item = NumericTableItem(str(auth['author_id']), auth['author_id'])
@@ -169,7 +169,7 @@ class AuthorsDialog(QDialog):
             patronymic = dialog.patronymic_edit.text().strip()
             birth_year = dialog.birth_year_spin.value()
             country = dialog.country_combo.currentText().strip()
-            success = self.controller.add_new_author(
+            success = self.controller.add_author(
                 last_name,
                 first_name,
                 patronymic,
@@ -196,7 +196,7 @@ class AuthorsDialog(QDialog):
             QMessageBox.Yes | QMessageBox.No
         )
         if confirm == QMessageBox.Yes:
-            success, msg = self.controller.delete_author_by_id(author_id)
+            success, msg = self.controller.delete_author(author_id)
             if success:
                 self.update_authors_table()
                 QMessageBox.information(self, "Успех", "Автор успешно удален")

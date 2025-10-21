@@ -14,7 +14,7 @@ class BookAuthorsDialog(QDialog):
     def __init__(self, controller, parent=None):
         super().__init__(parent)
         self.controller = controller
-        self.all_links = controller.get_all_book_authors()  # список связей
+        self.all_links = controller.get_book_authors()  # список связей
 
         self.setWindowTitle("Связи автор–книга")
         self.setMinimumSize(800, 600)
@@ -65,7 +65,7 @@ class BookAuthorsDialog(QDialog):
 
     def update_links_table(self):
         """Обновление содержимого таблицы связей"""
-        self.all_links = self.controller.get_all_book_authors()
+        self.all_links = self.controller.get_book_authors()
         self.links_table.setRowCount(len(self.all_links))
         self.links_table.setSortingEnabled(False)
 
@@ -86,7 +86,7 @@ class BookAuthorsDialog(QDialog):
         if dialog.exec():
             book_id = int(dialog.book_id_combo.currentData())
             author_id = int(dialog.author_id_combo.currentData())
-            link_id = self.controller.add_new_book_author(book_id, author_id)
+            link_id = self.controller.add_book_author(book_id, author_id)
 
             if link_id:
                 self.update_links_table()
@@ -143,7 +143,7 @@ class BookAuthorsDialog(QDialog):
         )
 
         if confirm == QMessageBox.Yes:
-            success, message = self.controller.delete_book_author_by_id(book_id, author_id)
+            success, message = self.controller.delete_book_author(book_id, author_id)
             if success:
                 self.update_links_table()
                 QMessageBox.information(self, "Успех", "Связь успешно удалена")
@@ -167,8 +167,8 @@ class AddBookAuthorDialog(QDialog):
         label_style = "color: #333333; font-weight: bold;"
 
         # Получаем список книг и авторов
-        self.books = self.controller.get_all_books()    # список словарей книг
-        self.authors = self.controller.get_all_authors() # список словарей авторов
+        self.books = self.controller.get_books()    # список словарей книг
+        self.authors = self.controller.get_authors() # список словарей авторов
 
         # Книга (выбор из существующих)
         book_id_label = QLabel("Книга:")
@@ -229,8 +229,8 @@ class EditBookAuthorDialog(QDialog):
         label_style = "color: #333333; font-weight: bold;"
 
         # Получаем список книг и авторов
-        self.books = self.controller.get_all_books()
-        self.authors = self.controller.get_all_authors()
+        self.books = self.controller.get_books()
+        self.authors = self.controller.get_authors()
 
         # Книга (выбор из существующих)
         book_id_label = QLabel("Книга:")

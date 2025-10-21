@@ -14,7 +14,8 @@ from books import BooksDialog
 from readers import ReadersDialog
 from issues import IssuesDialog
 from bookauthors import BookAuthorsDialog
-from controller import Controller
+from data import DatabaseManager
+from validators import TextValidator
 from logger import Logger
 
 
@@ -26,7 +27,7 @@ class ValidatedLoginLineEdit(QLineEdit):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.controller = Controller()
+        self.controller = DatabaseManager()
 
     def keyPressEvent(self, event):
         """Обработка нажатия клавиш с валидацией."""
@@ -45,7 +46,7 @@ class ValidatedLoginLineEdit(QLineEdit):
             return
 
         # Используем функцию валидации
-        if self.controller.is_valid_text_input(new_text):
+        if TextValidator.is_valid_text_input(new_text):
             return
 
         # Если текст не валиден, восстанавливаем старый текст
@@ -59,7 +60,7 @@ class LoginDialog(QDialog):
     """
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.controller = Controller()
+        self.controller = DatabaseManager()
         self.logger = Logger()
 
         # Единый стиль для всех диалоговых окон сообщений
@@ -251,12 +252,12 @@ class LoginDialog(QDialog):
         self.controller.set_connection_params(dbname, user, password, host, port)
 
         # Попытка подключения
-        if self.controller.connect_to_database():
+        if self.controller.connect():
             try:
                 # Проверка существования структуры базы данных
-                self.controller.db.cursor.execute(
+                self.controller.cursor.execute(
                     "SELECT 1 FROM information_schema.tables WHERE table_name = 'books'")
-                table_exists = self.controller.db.cursor.fetchone() is not None
+                table_exists = self.controller.cursor.fetchone() is not None
 
                 # Если структура не существует, предлагаем создать
                 if not table_exists:
@@ -345,7 +346,7 @@ class LoginDialog(QDialog):
 
                 if reply == QMessageBox.Yes:
                     # Подключение и инициализация базы данных
-                    if self.controller.connect_to_database() and self.controller.initialize_database():
+                    if self.controller.connect() and self.controller.initialize_database():
                         success_box = QMessageBox(self)
                         success_box.setWindowTitle("Успех")
                         success_box.setText("База данных, схема и таблицы успешно созданы")
@@ -736,12 +737,12 @@ class MainWindow(QMainWindow):
 
         if confirm == QMessageBox.Yes:
             self.logger.info("Отключение от базы данных и выход из программы")
-            self.controller.close()
-            self.close()
+            self.controller.disconnect()
+            self.disconnect()
 
     def closeEvent(self, event):
         """Обработка события закрытия окна."""
-        self.controller.close()
+        self.controller.disconnect()
         event.accept()
 
 class CurrencyTableItem(QTableWidgetItem):

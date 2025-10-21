@@ -14,7 +14,7 @@ class IssuesDialog(QDialog):
     def __init__(self, controller, parent=None):
         super().__init__(parent)
         self.controller = controller
-        self.all_issues = controller.get_all_issues()
+        self.all_issues = controller.get_issues()
 
         self.setWindowTitle("Заказы (выдачи книг)")
         self.setMinimumSize(800, 600)
@@ -65,7 +65,7 @@ class IssuesDialog(QDialog):
 
     def update_issues_table(self):
         """Обновление содержимого таблицы заказов"""
-        self.all_issues = self.controller.get_all_issues()
+        self.all_issues = self.controller.get_issues()
         self.issues_table.setRowCount(len(self.all_issues))
         self.issues_table.setSortingEnabled(False)
 
@@ -92,7 +92,7 @@ class IssuesDialog(QDialog):
             reader_id = int(dialog.reader_id_combo.currentData())
             issue_date = dialog.issue_date_edit.text().strip()
             return_date = dialog.return_date_edit.text().strip() or None
-            issue_id = self.controller.add_new_issue(
+            issue_id = self.controller.add_issue(
                 book_id, reader_id, issue_date, return_date
             )
 
@@ -144,7 +144,7 @@ class IssuesDialog(QDialog):
         )
 
         if confirm == QMessageBox.Yes:
-            success, message = self.controller.delete_issue_by_id(issue_id)
+            success, message = self.controller.delete_issue(issue_id)
             if success:
                 self.update_issues_table()
                 QMessageBox.information(self, "Успех", "Заказ успешно удален")
@@ -168,8 +168,8 @@ class AddIssueDialog(QDialog):
         label_style = "color: #333333; font-weight: bold;"
 
         # Получаем список книг и читателей
-        self.books = self.controller.get_all_books()    # список словарей книг
-        self.readers = self.controller.get_all_readers() # список словарей читателей
+        self.books = self.controller.get_books()    # список словарей книг
+        self.readers = self.controller.get_readers() # список словарей читателей
 
         # ID книги (выбор из существующих)
         book_id_label = QLabel("ID книги:")
@@ -265,8 +265,8 @@ class EditIssueDialog(QDialog):
         label_style = "color: #333333; font-weight: bold;"
 
         # Получаем список книг и читателей
-        self.books = self.controller.get_all_books()
-        self.readers = self.controller.get_all_readers()
+        self.books = self.controller.get_books()
+        self.readers = self.controller.get_readers()
 
         # Книга (выбор из существующих)
         book_id_label = QLabel("Книга:")

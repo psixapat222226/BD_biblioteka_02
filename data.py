@@ -181,6 +181,17 @@ class DatabaseManager:
             self.logger.error(f"Ошибка создания схемы БД: {str(e)}")
             return False
 
+    def initialize_database(self):
+        """
+        Инициализация схемы БД и заполнение тестовыми данными.
+
+        Returns:
+            bool: Успешность инициализации
+        """
+        result1 = self.create_schema()
+        result2 = self.init_sample_data()
+        return result1 and result2
+
     def init_sample_data(self):
         """
         Инициализация БД тестовыми данными.

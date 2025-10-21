@@ -1,6 +1,6 @@
 
 from PySide6.QtWidgets import QTableWidgetItem, QLineEdit
-
+from validators import TextValidator
 
 class NumericTableItem(QTableWidgetItem):
     """
@@ -25,7 +25,6 @@ class ValidatedLineEdit(QLineEdit):
 
     def __init__(self, controller, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.controller = controller
 
     def keyPressEvent(self, event):
         """Обработка нажатия клавиш с валидацией."""
@@ -40,7 +39,7 @@ class ValidatedLineEdit(QLineEdit):
         new_text = self.text()
 
         # Если текст пустой, разрешаем его
-        if not new_text or self.controller.is_valid_text_input(new_text):
+        if not new_text or TextValidator.is_valid_text_input(new_text):
             return
 
         # Если текст не валиден, восстанавливаем старый текст
