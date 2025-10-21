@@ -4,7 +4,8 @@
 """
 import sys
 from PySide6.QtWidgets import QApplication
-from app import MainWindow, LoginDialog
+from ui.windows.MainWindow import MainWindow
+from app import LoginDialog
 from BD_biblioteka_02.core.logger import Logger
 
 if __name__ == "__main__":
