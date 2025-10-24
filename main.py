@@ -10,6 +10,7 @@ from BD_biblioteka_02.core.logger import Logger
 
 if __name__ == "__main__":
     # Инициализация логгера
+
     logger = Logger()
     logger.info("Запуск приложения")
 

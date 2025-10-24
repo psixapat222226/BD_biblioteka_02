@@ -1,9 +1,9 @@
 from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout,
                               QHBoxLayout, QWidget, QDialog, QMessageBox, QComboBox,
                               QSpinBox, QTableWidget, QTableWidgetItem, QLineEdit, QDateEdit,
-                              QFormLayout, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit)
+                              QFormLayout, QMenu, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit)
 from PySide6.QtCore import Qt, QTimer, QDate
-from PySide6.QtGui import QFont, QIntValidator
+from PySide6.QtGui import QFont, QIntValidator, QAction
 from ..dialogs.bookauthors import BookAuthorsDialog
 from ..dialogs.authors import AuthorsDialog
 from ..dialogs.readers import ReadersDialog
@@ -11,7 +11,7 @@ from ..dialogs.books import BooksDialog
 from ..dialogs.issues import IssuesDialog
 from BD_biblioteka_02.core.logger import Logger
 from ..styles import (get_light_theme_style, get_dark_theme_style, get_log_display_style, get_title_style)
-
+from ...core.enums import TableType
 class MainWindow(QMainWindow):
     """
     Главное окно приложения "Библиотека".
@@ -125,32 +125,74 @@ class MainWindow(QMainWindow):
         """Настройка панели кнопок главного окна."""
         buttons_layout = QHBoxLayout()
 
-        # Кнопка просмотра таблицы Авторы
-        self.authors_btn = QPushButton("Авторы")
-        self.authors_btn.clicked.connect(self.show_authors)
-        buttons_layout.addWidget(self.authors_btn)
+        # Создаем единую кнопку "Таблицы" с выпадающим меню
+        self.tables_menu = QMenu(self)
 
-        # Кнопка просмотра таблицы Книги
-        self.books_btn = QPushButton("Книги")
-        self.books_btn.clicked.connect(self.show_books)
-        buttons_layout.addWidget(self.books_btn)
+        # Добавляем действия для каждой таблицы
+        authors_action = QAction("Авторы", self)
+        authors_action.triggered.connect(lambda: self.show_table(TableType.AUTHORS))
+        self.tables_menu.addAction(authors_action)
 
-        # Кнопка просмотра таблицы Читатели
-        self.readers_btn = QPushButton("Читатели")
-        self.readers_btn.clicked.connect(self.show_readers)
-        buttons_layout.addWidget(self.readers_btn)
+        books_action = QAction("Книги", self)
+        books_action.triggered.connect(lambda: self.show_table(TableType.BOOKS))
+        self.tables_menu.addAction(books_action)
 
-        # Кнопка просмотра таблицы Заказы но пока читатели
-        self.issues_btn = QPushButton("Заказы")
-        self.issues_btn.clicked.connect(self.show_issues)
-        buttons_layout.addWidget(self.issues_btn)
+        readers_action = QAction("Читатели", self)
+        readers_action.triggered.connect(lambda: self.show_table(TableType.READERS))
+        self.tables_menu.addAction(readers_action)
 
-        # Кнопка просмотра таблицы тоже в разработке
-        self.books_authors_btn = QPushButton("Автор/книга")
-        self.books_authors_btn.clicked.connect(self.show_books_authors)
-        buttons_layout.addWidget(self.books_authors_btn)
+        issues_action = QAction("Заказы", self)
+        issues_action.triggered.connect(lambda: self.show_table(TableType.ISSUES))
+        self.tables_menu.addAction(issues_action)
+
+        book_authors_action = QAction("Автор/книга", self)
+        book_authors_action.triggered.connect(lambda: self.show_table(TableType.BOOK_AUTHORS))
+        self.tables_menu.addAction(book_authors_action)
+
+        # Создаем кнопку "Таблицы" и устанавливаем для нее меню
+        self.tables_btn = QPushButton("Таблицы")
+        self.tables_btn.setMenu(self.tables_menu)
+
+        # Скрываем индикатор меню (белый треугольник)
+        self.tables_btn.setStyleSheet("""
+            QPushButton::menu-indicator { 
+                image: none; 
+                width: 0px; 
+                height: 0px;
+            }
+        """)
+
+        buttons_layout.addWidget(self.tables_btn)
+
+        # Добавление кнопки JOIN справа от кнопки Таблицы
+        self.join_btn = QPushButton("JOIN")
+        self.join_btn.clicked.connect(self.show_join_wizard)
+        buttons_layout.addWidget(self.join_btn)
 
         main_layout.addLayout(buttons_layout)
+
+    def show_table(self, table_type):
+        """Открывает диалог с выбранной таблицей."""
+        if table_type == TableType.AUTHORS:
+            dialog = AuthorsDialog(self.controller, self)
+        elif table_type == TableType.BOOKS:
+            dialog = BooksDialog(self.controller, self)
+        elif table_type == TableType.READERS:
+            dialog = ReadersDialog(self.controller, self)
+        elif table_type == TableType.ISSUES:
+            dialog = IssuesDialog(self.controller, self)
+        elif table_type == TableType.BOOK_AUTHORS:
+            dialog = BookAuthorsDialog(self.controller, self)
+        else:
+            return
+
+        dialog.exec()
+
+    def show_join_wizard(self):
+        """Открывает диалог мастера соединений."""
+        from ..dialogs.join_dialog import JoinWizardDialog
+        dialog = JoinWizardDialog(self.controller, self)
+        dialog.exec()
 
     def load_logs(self):
         """Загрузка содержимого лог-файла в окно логов."""
