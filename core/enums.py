@@ -3,6 +3,14 @@ Enum'ы для приложения
 """
 from enum import Enum
 
+class TableType(Enum):
+    """Типы таблиц в базе данных"""
+    AUTHORS = "authors"
+    BOOKS = "books"
+    READERS = "readers"
+    ISSUES = "issues"
+    BOOK_AUTHORS = "book_authors"
+
 class Country(Enum):
     """Страны авторов"""
     C1 = "Россия"

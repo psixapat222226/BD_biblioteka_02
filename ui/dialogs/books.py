@@ -135,7 +135,7 @@ class BooksDialog(QDialog):
             QMessageBox.Yes | QMessageBox.No
         )
         if confirm == QMessageBox.Yes:
-            success, msg = self.controller.delete_book_by_id(book_id)
+            success, msg = self.controller.delete_book(book_id)
             if success:
                 self.update_books_table()
                 QMessageBox.information(self, "Успех", "Книга успешно удалена")
