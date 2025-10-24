@@ -63,3 +63,79 @@ class TextValidator:
             bool: True если текст валиден, False в противном случае
         """
         return bool(re.match(r'^[а-яА-Яa-zA-Z0-9\s]*$', text))
+
+class RequestBuilder: #Класс для построения SQL-запросов (запросов к БД)
+    
+    def __init__(self):
+        self.reset()
+    
+    def reset(self):
+        self._select = []
+        self._from = ""
+        self._where = []
+        self._order_by = []
+        self._group_by = []
+        self._having = []
+        self._aggregate = None
+    
+    def select(self, columns):
+        if isinstance(columns, str):
+            self._select = [columns]
+        else:
+            self._select = columns
+        return self
+    
+    def from_table(self, table):
+        self._from = table
+        return self
+    
+    def where(self, condition):
+        self._where.append(condition)
+        return self
+    
+    def order_by(self, column, direction="ASC"):
+        self._order_by.append(f"{column} {direction}")
+        return self
+    
+    def group_by(self, column):
+        self._group_by.append(column)
+        return self
+    
+    def having(self, condition):
+        self._having.append(condition)
+        return self
+    
+    def aggregate(self, function, column):
+        self._aggregate = f"{function}({column})"
+        return self
+    
+    def build(self):
+        if self._group_by and not self._aggregate:
+            self._aggregate = "COUNT(*)"
+        if not self._select and not self._aggregate:
+            self._select = ["*"]
+        
+        sql = "SELECT "
+        
+        if self._aggregate:
+            sql += self._aggregate
+            if self._select:
+                sql += ", " + ", ".join(self._select)
+        else:
+            sql += ", ".join(self._select) if self._select else "*"
+        
+        sql += f" FROM {self._from}"
+        
+        if self._where:
+            sql += " WHERE " + " AND ".join(self._where)
+        
+        if self._group_by:
+            sql += " GROUP BY " + ", ".join(self._group_by)
+        
+        if self._having:
+            sql += " HAVING " + " AND ".join(self._having)
+        
+        if self._order_by:
+            sql += " ORDER BY " + ", ".join(self._order_by)
+        
+        return sql
