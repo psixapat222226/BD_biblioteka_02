@@ -1,9 +1,9 @@
 from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout,
                               QHBoxLayout, QWidget, QDialog, QMessageBox, QComboBox,
                               QSpinBox, QTableWidget, QTableWidgetItem, QLineEdit, QDateEdit,
-                              QFormLayout, QMenu, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit)
+                              QFormLayout, QMenu, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit,)
 from PySide6.QtCore import Qt, QTimer, QDate
-from PySide6.QtGui import QFont, QIntValidator, QAction
+from PySide6.QtGui import QFont, QIntValidator,QAction
 from ..dialogs.bookauthors import BookAuthorsDialog
 from ..dialogs.authors import AuthorsDialog
 from ..dialogs.readers import ReadersDialog
@@ -12,6 +12,7 @@ from ..dialogs.issues import IssuesDialog
 from BD_biblioteka_02.core.logger import Logger
 from ..styles import (get_light_theme_style, get_dark_theme_style, get_log_display_style, get_title_style)
 from ...core.enums import TableType
+
 class MainWindow(QMainWindow):
     """
     Главное окно приложения "Библиотека".
@@ -125,7 +126,7 @@ class MainWindow(QMainWindow):
         """Настройка панели кнопок главного окна."""
         buttons_layout = QHBoxLayout()
 
-        # Создаем единую кнопку "Таблицы" с выпадающим меню
+       # Создаем единую кнопку "Таблицы" с выпадающим меню
         self.tables_menu = QMenu(self)
 
         # Добавляем действия для каждой таблицы
@@ -169,30 +170,12 @@ class MainWindow(QMainWindow):
         self.join_btn.clicked.connect(self.show_join_wizard)
         buttons_layout.addWidget(self.join_btn)
 
+        # Кнопка для построителя запросов
+        self.request_builder_btn = QPushButton("SELECT")
+        self.request_builder_btn.clicked.connect(self.show_request_builder)
+        buttons_layout.addWidget(self.request_builder_btn)
+
         main_layout.addLayout(buttons_layout)
-
-    def show_table(self, table_type):
-        """Открывает диалог с выбранной таблицей."""
-        if table_type == TableType.AUTHORS:
-            dialog = AuthorsDialog(self.controller, self)
-        elif table_type == TableType.BOOKS:
-            dialog = BooksDialog(self.controller, self)
-        elif table_type == TableType.READERS:
-            dialog = ReadersDialog(self.controller, self)
-        elif table_type == TableType.ISSUES:
-            dialog = IssuesDialog(self.controller, self)
-        elif table_type == TableType.BOOK_AUTHORS:
-            dialog = BookAuthorsDialog(self.controller, self)
-        else:
-            return
-
-        dialog.exec()
-
-    def show_join_wizard(self):
-        """Открывает диалог мастера соединений."""
-        from ..dialogs.join_dialog import JoinWizardDialog
-        dialog = JoinWizardDialog(self.controller, self)
-        dialog.exec()
 
     def load_logs(self):
         """Загрузка содержимого лог-файла в окно логов."""
@@ -291,6 +274,35 @@ class MainWindow(QMainWindow):
         dialog = BookAuthorsDialog(self.controller, self)
         dialog.exec()
 
+    def show_table(self, table_type):
+        """Открывает диалог с выбранной таблицей."""
+        if table_type == TableType.AUTHORS:
+            dialog = AuthorsDialog(self.controller, self)
+        elif table_type == TableType.BOOKS:
+            dialog = BooksDialog(self.controller, self)
+        elif table_type == TableType.READERS:
+            dialog = ReadersDialog(self.controller, self)
+        elif table_type == TableType.ISSUES:
+            dialog = IssuesDialog(self.controller, self)
+        elif table_type == TableType.BOOK_AUTHORS:
+            dialog = BookAuthorsDialog(self.controller, self)
+        else:
+            return
+
+        dialog.exec()
+
+    def show_join_wizard(self):
+        """Открывает диалог мастера соединений."""
+        from ..dialogs.join_dialog import JoinWizardDialog
+        dialog = JoinWizardDialog(self.controller, self)
+        dialog.exec()
+
+    def show_request_builder(self):
+        """Открытие диалога построителя запросов"""
+        from ..dialogs.request_builder import RequestBuilderDialog
+        dialog = RequestBuilderDialog(self.controller, self)
+        dialog.exec()
+
     def disconnect_from_db(self):
         """Отключение от базы данных и выход из программы."""
         # Запрос подтверждения
@@ -304,7 +316,8 @@ class MainWindow(QMainWindow):
         if confirm == QMessageBox.Yes:
             self.logger.info("Отключение от базы данных и выход из программы")
             self.controller.disconnect()
-            self.disconnect()
+            #self.disconnect()
+            QApplication.quit()
 
     def closeEvent(self, event):
         """Обработка события закрытия окна."""
