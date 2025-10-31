@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2 import sql
 from psycopg2.extras import DictCursor
-from BD_biblioteka_02.core.logger import Logger
+from core.logger import Logger
 
 
 class DatabaseManager:

@@ -4,14 +4,20 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, Q
                               QFormLayout, QMenu, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit,)
 from PySide6.QtCore import Qt, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator,QAction
-from ..dialogs.bookauthors import BookAuthorsDialog
-from ..dialogs.authors import AuthorsDialog
-from ..dialogs.readers import ReadersDialog
-from ..dialogs.books import BooksDialog
-from ..dialogs.issues import IssuesDialog
-from BD_biblioteka_02.core.logger import Logger
-from ..styles import (get_light_theme_style, get_dark_theme_style, get_log_display_style, get_title_style)
-from ...core.enums import TableType
+from ui.dialogs.bookauthors import BookAuthorsDialog
+from ui.dialogs.authors import AuthorsDialog
+from ui.dialogs.readers import ReadersDialog
+from ui.dialogs.books import BooksDialog
+from ui.dialogs.issues import IssuesDialog
+from core.logger import Logger
+from ui.styles import (get_light_theme_style, get_dark_theme_style, get_log_display_style, get_title_style)
+from core.enums import TableType
+
+from ui.dialogs.searchable_authors import SearchableAuthorsDialog
+from ui.dialogs.searchable_books import SearchableBooksDialog
+from ui.dialogs.searchable_readers import SearchableReadersDialog
+from ui.dialogs.searchable_issues import SearchableIssuesDialog
+from ui.dialogs.searchable_bookauthors import SearchableBookAuthorsDialog
 
 class MainWindow(QMainWindow):
     """
@@ -277,15 +283,15 @@ class MainWindow(QMainWindow):
     def show_table(self, table_type):
         """Открывает диалог с выбранной таблицей."""
         if table_type == TableType.AUTHORS:
-            dialog = AuthorsDialog(self.controller, self)
+            dialog = SearchableAuthorsDialog(self.controller, self)
         elif table_type == TableType.BOOKS:
-            dialog = BooksDialog(self.controller, self)
+            dialog = SearchableBooksDialog(self.controller, self)
         elif table_type == TableType.READERS:
-            dialog = ReadersDialog(self.controller, self)
+            dialog = SearchableReadersDialog(self.controller, self)
         elif table_type == TableType.ISSUES:
-            dialog = IssuesDialog(self.controller, self)
+            dialog = SearchableIssuesDialog(self.controller, self)
         elif table_type == TableType.BOOK_AUTHORS:
-            dialog = BookAuthorsDialog(self.controller, self)
+            dialog = SearchableBookAuthorsDialog(self.controller, self)
         else:
             return
 
