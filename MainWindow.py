@@ -4,15 +4,15 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, Q
                               QFormLayout, QMenu, QTabWidget, QScrollArea, QFrame, QHeaderView, QTextEdit)
 from PySide6.QtCore import Qt, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator, QAction
-from ..dialogs.bookauthors import BookAuthorsDialog
+from ui.dialogs.bookauthors import BookAuthorsDialog
 from ..dialogs.authors import AuthorsDialog
 from ..dialogs.readers import ReadersDialog
 from ..dialogs.books import BooksDialog
 from ..dialogs.issues import IssuesDialog
-from BD_biblioteka_02.core.logger import Logger
-from ..styles import (get_light_theme_style, get_dark_theme_style, get_log_display_style, get_title_style)
-from ...core.enums import TableType
-from ..dialogs.alter_table_dialog import AlterTableDialog
+from core.logger import Logger
+from ui.styles import (get_light_theme_style, get_dark_theme_style, get_log_display_style, get_title_style)
+from core.enums import TableType
+from ui.dialogs.alter_table_dialog import AlterTableDialog
 class MainWindow(QMainWindow):
     """
     Главное окно приложения "Библиотека".

@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import QDateTime
 
-from BD_biblioteka_02.core.alter_operations import AlterTableManager
+from core.alter_operations import AlterTableManager
 
 
 class AlterTableDialog(QDialog):

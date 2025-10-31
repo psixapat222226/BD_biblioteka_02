@@ -5,9 +5,9 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLabel, Q
 from PySide6.QtCore import Qt, Signal, QTimer, QDate
 from PySide6.QtGui import QFont, QIntValidator
 
-from ...core.enums import Country
-from ...core.additional_classes import NumericTableItem
-from ..styles import get_form_label_style
+from core.enums import Country
+from core.additional_classes import NumericTableItem
+from ui.styles import get_form_label_style
 
 class AuthorsDialog(QDialog):
     """

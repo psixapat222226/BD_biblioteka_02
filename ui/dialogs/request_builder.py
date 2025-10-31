@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (QDialog,QMessageBox,QScrollArea, QVBoxLayout, QHB
                               QLineEdit, QComboBox, QPushButton, QTableWidget, QTableWidgetItem,
                               QLabel, QFormLayout)
 from PySide6.QtCore import Qt
-from ...core.additional_classes import RequestBuilder
+from core.additional_classes import RequestBuilder
 
 class RequestBuilderDialog(QDialog):
     """

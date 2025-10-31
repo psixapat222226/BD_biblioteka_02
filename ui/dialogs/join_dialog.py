@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QPushButton, Q
                                QTableWidget, QTableWidgetItem, QHeaderView, QMessageBox,
                                QGroupBox, QRadioButton, QCheckBox, QLineEdit)
 from PySide6.QtCore import Qt
-from ..styles import get_button_style, get_combobox_style, get_table_style, get_input_fields_style
+from ui.styles import get_button_style, get_combobox_style, get_table_style, get_input_fields_style
 
 
 class JoinWizardDialog(QDialog):
