@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QPushButton, 
                               QTableWidget, QTableWidgetItem, QComboBox, QLineEdit)
 
+from .string_operations import StringOperationsDialog
+
 class SearchableDialogMixin:
     """Миксин для добавления функционала поиска в диалоги с таблицами"""
     
@@ -25,7 +27,7 @@ class SearchableDialogMixin:
     
     def setup_search(self):
         """Настройка интерфейса поиска"""
-        # Создаем layout для поисковых элементов
+        # Создаем layout для поисковых элементов и кнопки строковых операций
         search_layout = QHBoxLayout()
         
         # Добавляем компоненты в layout
@@ -37,6 +39,11 @@ class SearchableDialogMixin:
         search_button = QPushButton("Поиск")
         search_button.clicked.connect(self.perform_search)
         search_layout.addWidget(search_button)
+        
+        # Добавляем кнопку строковых операций
+        string_ops_button = QPushButton("Строковые операции")
+        string_ops_button.clicked.connect(self.show_string_operations)
+        search_layout.addWidget(string_ops_button)
         
         # Добавляем поисковый layout перед закрытием окна
         self.layout().insertLayout(self.layout().count() - 1, search_layout)
@@ -94,3 +101,30 @@ class SearchableDialogMixin:
     def get_table_widget(self):
         """Метод должен быть переопределен в конкретных классах"""
         raise NotImplementedError
+
+    def show_string_operations(self):
+        """Открывает диалог строковых операций"""
+        table = self.get_table_widget()
+        
+        # Собираем данные из таблицы
+        table_data = {
+            'headers': [],
+            'rows': []
+        }
+        
+        # Получаем заголовки
+        for col in range(table.columnCount()):
+            header = table.horizontalHeaderItem(col).text()
+            table_data['headers'].append(header)
+        
+        # Получаем данные
+        for row in range(table.rowCount()):
+            row_data = []
+            for col in range(table.columnCount()):
+                item = table.item(row, col)
+                row_data.append(item.text() if item else "")
+            table_data['rows'].append(row_data)
+        
+        # Создаем и показываем диалог
+        dialog = StringOperationsDialog(table_data, self)
+        dialog.exec()
