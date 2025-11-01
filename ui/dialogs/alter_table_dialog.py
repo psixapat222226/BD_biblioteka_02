@@ -264,11 +264,8 @@ class AlterTableDialog(QDialog):
 
         # Первичная инициализация зависимых комбобоксов
         if tables:
-            # Столбцы для удаления
             self.update_columns_combo(self.drop_table_combo, self.drop_column_combo)
-            # Столбцы для переименования
             self.update_columns_combo(self.rename_column_table_combo, self.rename_old_column_combo)
-            # Ограничения для удаления
             self.update_constraints_combo(self.drop_constraint_table_combo, self.drop_constraint_combo)
 
         # Обновляем таблицу “Обзор БД”
@@ -282,6 +279,45 @@ class AlterTableDialog(QDialog):
             self.tables_table.setItem(i, 2, QTableWidgetItem(", ".join([col[1] for col in columns])))
             self.tables_table.setItem(i, 3, QTableWidgetItem(", ".join([con[0] for con in constraints])))
 
+    def rename_table(self):
+        old_name = (self.rename_old_table_combo.currentText() or "").strip()
+        new_name = (self.rename_new_table_edit.text() or "").strip()
+
+        # Базовые проверки
+        if not old_name or not new_name:
+            QMessageBox.warning(self, "Ошибка", "Заполните все поля")
+            return
+        if old_name == new_name:
+            QMessageBox.information(self, "Информация", "Новое имя совпадает со старым")
+            return
+
+        # Усиленное предупреждение для системных таблиц приложения
+        app_core_tables = {"authors", "books", "readers", "issues", "book_authors"}
+        is_core = old_name in app_core_tables
+
+        # Всегда спрашиваем подтверждение, чтобы диалог точно показывался
+        title = "Внимание" if is_core else "Подтверждение"
+        msg = (
+            "Вы собираетесь переименовать системную таблицу приложения.\n"
+            "Нестатические окна перестанут работать (до возврата имени).\n\n"
+            f"Переименовать '{old_name}' в '{new_name}'?"
+            if is_core else
+            f"Переименовать таблицу '{old_name}' в '{new_name}'?"
+        )
+
+        reply = QMessageBox.question(self, title, msg, QMessageBox.Yes | QMessageBox.No)
+        if reply != QMessageBox.Yes:
+            # Отмена пользователем
+            return
+
+        # Выполняем переименование
+        success, message = self.alter_manager.rename_table(old_name, new_name)
+        self.log_result(success, message)
+
+        if success:
+            # Обновляем все списки и очищаем поле ввода
+            self.load_tables()
+            self.rename_new_table_edit.clear()
     def update_columns_combo(self, table_combo, column_combo):
         """Обновить комбобокс столбцов при изменении таблицы."""
         table = table_combo.currentText()
@@ -344,20 +380,6 @@ class AlterTableDialog(QDialog):
             if success:
                 self.load_tables()
 
-    def rename_table(self):
-        old_name = self.rename_old_table_combo.currentText()
-        new_name = self.rename_new_table_edit.text()
-
-        if not old_name or not new_name:
-            QMessageBox.warning(self, "Ошибка", "Заполните все поля")
-            return
-
-        success, message = self.alter_manager.rename_table(old_name, new_name)
-        self.log_result(success, message)
-        if success:
-            self.load_tables()
-            self.rename_new_table_edit.clear()
-
     def rename_column(self):
         table = self.rename_column_table_combo.currentText()
         old_name = self.rename_old_column_combo.currentText()
@@ -371,6 +393,7 @@ class AlterTableDialog(QDialog):
         self.log_result(success, message)
         if success:
             self.load_tables()
+
             self.rename_new_column_edit.clear()
 
     def add_constraint(self):

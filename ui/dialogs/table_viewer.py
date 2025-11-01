@@ -46,14 +46,12 @@ class TableViewerDialog(QDialog):
             return
 
         try:
-            # Берём все актуальные колонки и строки
             query = f"SELECT * FROM {table} ORDER BY 1"
             rows = self.controller.execute_custom_request(query)
 
             self.table_widget.clear()
 
             if not rows:
-                # Пустая таблица — покажем шапку из схемы
                 columns = self.controller.get_table_columns(table) or []
                 self.table_widget.setRowCount(0)
                 self.table_widget.setColumnCount(len(columns))
@@ -70,4 +68,10 @@ class TableViewerDialog(QDialog):
                     val = row.get(col)
                     self.table_widget.setItem(i, j, QTableWidgetItem("" if val is None else str(val)))
         except Exception as e:
+            # Доп. страховка: на случай, если вызвали не через execute_custom_request
+            try:
+                if hasattr(self.controller, "connection") and self.controller.connection:
+                    self.controller.connection.rollback()
+            except Exception:
+                pass
             QMessageBox.critical(self, "Ошибка", f"Не удалось загрузить таблицу:\n{e}")
