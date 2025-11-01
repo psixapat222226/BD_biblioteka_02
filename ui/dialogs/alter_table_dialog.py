@@ -19,8 +19,9 @@ class AlterTableDialog(QDialog):
         self.db_connection = db_connection
         self.alter_manager = AlterTableManager(db_connection)
         self.setup_ui()
-        self.load_tables()
+        # ВАЖНО: сначала подключаем сигналы, затем загружаем данные
         self.connect_signals()
+        self.load_tables()
 
     def setup_ui(self):
         self.setWindowTitle("Управление структурой базы данных")
@@ -250,14 +251,27 @@ class AlterTableDialog(QDialog):
         """Загрузка списка таблиц и их информации."""
         tables = self.alter_manager.get_tables()
 
-        # Обновляем все комбобоксы
+        # Обновляем все комбобоксы с таблицами
         for combo in [self.add_table_combo, self.drop_table_combo,
                       self.rename_old_table_combo, self.constraint_table_combo,
                       self.drop_constraint_table_combo, self.rename_column_table_combo]:
+            combo.blockSignals(True)
             combo.clear()
-            combo.addItems(tables)
+            if tables:
+                combo.addItems(tables)
+                combo.setCurrentIndex(0)
+            combo.blockSignals(False)
 
-        # Обновляем таблицу с информацией
+        # Первичная инициализация зависимых комбобоксов
+        if tables:
+            # Столбцы для удаления
+            self.update_columns_combo(self.drop_table_combo, self.drop_column_combo)
+            # Столбцы для переименования
+            self.update_columns_combo(self.rename_column_table_combo, self.rename_old_column_combo)
+            # Ограничения для удаления
+            self.update_constraints_combo(self.drop_constraint_table_combo, self.drop_constraint_combo)
+
+        # Обновляем таблицу “Обзор БД”
         self.tables_table.setRowCount(len(tables))
         for i, table in enumerate(tables):
             columns = self.alter_manager.get_table_columns(table)
@@ -271,17 +285,17 @@ class AlterTableDialog(QDialog):
     def update_columns_combo(self, table_combo, column_combo):
         """Обновить комбобокс столбцов при изменении таблицы."""
         table = table_combo.currentText()
+        column_combo.clear()
         if table:
             columns = self.alter_manager.get_table_columns(table)
-            column_combo.clear()
             column_combo.addItems([col[0] for col in columns])
 
     def update_constraints_combo(self, table_combo, constraint_combo):
         """Обновить комбобокс ограничений при изменении таблицы."""
         table = table_combo.currentText()
+        constraint_combo.clear()
         if table:
             constraints = self.alter_manager.get_table_constraints(table)
-            constraint_combo.clear()
             constraint_combo.addItems([con[0] for con in constraints])
 
     def log_result(self, success: bool, message: str):

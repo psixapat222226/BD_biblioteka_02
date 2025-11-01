@@ -337,14 +337,42 @@ class DatabaseManager:
             self.logger.error(f"Ошибка сброса схемы БД: {str(e)}")
             return False
 
+    def table_exists(self, table_name: str) -> bool:
+        """
+        Проверяет наличие таблицы в схеме public.
+        """
+        try:
+            self.cursor.execute("""
+                SELECT 1
+                FROM information_schema.tables
+                WHERE table_schema = 'public' AND table_name = %s
+                LIMIT 1
+            """, (table_name,))
+            return self.cursor.fetchone() is not None
+        except Exception as e:
+            # На всякий случай снимем aborted
+            try:
+                if self.connection:
+                    self.connection.rollback()
+            except Exception:
+                pass
+            self.logger.error(f"Ошибка проверки существования таблицы {table_name}: {e}")
+            return False
+
     def get_readers(self):
         """
         Получение списка всех читателей
         """
         try:
+            if not self.table_exists("readers"):
+                self.logger.warning("Таблица readers не найдена (возможно, была переименована)")
+                return []
             self.cursor.execute("SELECT * FROM readers ORDER BY reader_id")
             return self.cursor.fetchall()
         except psycopg2.Error as e:
+            # Важно: снять состояние aborted
+            if self.connection:
+                self.connection.rollback()
             self.logger.error(f"Ошибка получения списка читателей: {str(e)}")
             return []
 
@@ -353,9 +381,14 @@ class DatabaseManager:
         Получение списка всех книг
         """
         try:
+            if not self.table_exists("books"):
+                self.logger.warning("Таблица books не найдена (возможно, была переименована)")
+                return []
             self.cursor.execute("SELECT * FROM books ORDER BY book_id")
             return self.cursor.fetchall()
         except psycopg2.Error as e:
+            if self.connection:
+                self.connection.rollback()
             self.logger.error(f"Ошибка получения списка книг: {str(e)}")
             return []
 
@@ -364,10 +397,15 @@ class DatabaseManager:
         Получение списка всех заказов
         """
         try:
+            if not self.table_exists("issues"):
+                self.logger.warning("Таблица issues не найдена (возможно, была переименована)")
+                return []
             self.cursor.execute("SELECT * FROM issues ORDER BY issue_id")
             return self.cursor.fetchall()
         except psycopg2.Error as e:
-            self.logger.error(f"Ошибка получения списка закаазов: {str(e)}")
+            if self.connection:
+                self.connection.rollback()
+            self.logger.error(f"Ошибка получения списка заказов: {str(e)}")
             return []
 
     def get_book_authors(self):
@@ -375,19 +413,30 @@ class DatabaseManager:
         Получение списка всех связей книга–автор.
         """
         try:
+            if not self.table_exists("book_authors"):
+                self.logger.warning("Таблица book_authors не найдена (возможно, была переименована)")
+                return []
             self.cursor.execute("SELECT * FROM book_authors ORDER BY book_id, author_id")
             return self.cursor.fetchall()
         except psycopg2.Error as e:
-            self.connection.rollback()
+            if self.connection:
+                self.connection.rollback()
             self.logger.error(f"Ошибка получения списка связей книга–автор: {str(e)}")
             return []
 
     def get_authors(self, year=None):
-
+        """
+        Получение списка авторов (всех).
+        """
         try:
+            if not self.table_exists("authors"):
+                self.logger.warning("Таблица authors не найдена (возможно, была переименована)")
+                return []
             self.cursor.execute("SELECT * FROM authors ORDER BY author_id")
             return self.cursor.fetchall()
         except psycopg2.Error as e:
+            if self.connection:
+                self.connection.rollback()
             self.logger.error(f"Ошибка получения авторов: {str(e)}")
             return []
 

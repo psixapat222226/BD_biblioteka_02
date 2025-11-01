@@ -16,7 +16,7 @@ class JoinWizardDialog(QDialog):
         super().__init__(parent)
         self.controller = controller
         self.setWindowTitle("Мастер соединений (JOIN)")
-        self.setMinimumSize(900, 600)
+        self.setMinimumSize(1200, 800)
 
         # Больше не храним жестко столбцы — всё тянем из БД динамически
         self.setup_ui()
