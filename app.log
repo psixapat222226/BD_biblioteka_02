@@ -1166,3 +1166,212 @@ connection to server at "localhost" (127.0.0.1), port 54327 failed: Connection r
 2025-10-31 17:37:03 - INFO - Подключение к БД test1 успешно
 2025-10-31 17:37:04 - INFO - Главное окно инициализировано
 2025-10-31 17:37:22 - INFO - Соединение с БД закрыто
+2025-10-31 23:32:59 - INFO - Запуск приложения
+2025-10-31 23:33:00 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-10-31 23:33:00 - INFO - Подключение к БД test1 успешно
+2025-10-31 23:33:01 - INFO - Главное окно инициализировано
+2025-10-31 23:34:25 - INFO - Запуск приложения
+2025-10-31 23:34:27 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-10-31 23:34:27 - INFO - Подключение к БД test1 успешно
+2025-10-31 23:34:27 - INFO - Главное окно инициализировано
+2025-10-31 23:35:10 - INFO - Соединение с БД закрыто
+2025-10-31 23:36:27 - INFO - Запуск приложения
+2025-10-31 23:36:28 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-10-31 23:36:28 - INFO - Подключение к БД test1 успешно
+2025-10-31 23:36:29 - INFO - Главное окно инициализировано
+2025-10-31 23:36:38 - INFO - Соединение с БД закрыто
+2025-10-31 23:59:38 - INFO - Запуск приложения
+2025-10-31 23:59:39 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-10-31 23:59:39 - INFO - Подключение к БД test1 успешно
+2025-10-31 23:59:39 - INFO - Главное окно инициализировано
+2025-11-01 00:00:45 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers
+2025-11-01 00:01:32 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers
+2025-11-01 00:01:33 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers
+2025-11-01 00:01:43 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers ORDER BY first_name ASC
+2025-11-01 00:01:44 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers ORDER BY first_name ASC
+2025-11-01 00:01:46 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers ORDER BY first_name DESC
+2025-11-01 00:01:53 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers ORDER BY first_name DESC
+2025-11-01 00:01:54 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers ORDER BY first_name DESC
+2025-11-01 00:01:55 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers ORDER BY first_name DESC
+2025-11-01 00:02:01 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers ORDER BY first_name ASC
+2025-11-01 00:02:30 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers WHERE ticket_number =1001 ORDER BY first_name ASC
+2025-11-01 00:02:30 - ERROR - Ошибка выполнения запроса: ОШИБКА:  оператор не существует: character varying = integer
+LINE 1: ...egistration_date FROM readers WHERE ticket_number =1001 ORDE...
+                                                             ^
+HINT:  Оператор с данными именем и типами аргументов не найден. Возможно, вам следует добавить явные приведения типов.
+
+2025-11-01 00:02:30 - ERROR - Ошибка выполнения запроса: ОШИБКА:  оператор не существует: character varying = integer
+LINE 1: ...egistration_date FROM readers WHERE ticket_number =1001 ORDE...
+                                                             ^
+HINT:  Оператор с данными именем и типами аргументов не найден. Возможно, вам следует добавить явные приведения типов.
+
+2025-11-01 00:02:48 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers WHERE ticket_number = 1001 ORDER BY first_name ASC
+2025-11-01 00:02:48 - ERROR - Ошибка выполнения запроса: ОШИБКА:  текущая транзакция прервана, команды до конца блока транзакции игнорируются
+
+2025-11-01 00:02:48 - ERROR - Ошибка выполнения запроса: ОШИБКА:  текущая транзакция прервана, команды до конца блока транзакции игнорируются
+
+2025-11-01 00:03:05 - ERROR - Ошибка получения списка читателей: ОШИБКА:  текущая транзакция прервана, команды до конца блока транзакции игнорируются
+
+2025-11-01 00:03:05 - ERROR - Ошибка получения списка читателей: ОШИБКА:  текущая транзакция прервана, команды до конца блока транзакции игнорируются
+
+2025-11-01 00:03:14 - INFO - Отключение от базы данных и выход из программы
+2025-11-01 00:03:14 - INFO - Соединение с БД закрыто
+2025-11-01 00:03:14 - INFO - Соединение с БД закрыто
+2025-11-01 00:03:16 - INFO - Запуск приложения
+2025-11-01 00:03:17 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 00:03:17 - INFO - Подключение к БД test1 успешно
+2025-11-01 00:03:17 - INFO - Главное окно инициализировано
+2025-11-01 00:03:34 - INFO - Выполняется запрос: SELECT reader_id, last_name, first_name, patronymic, ticket_number, registration_date FROM readers WHERE ticket_number == 1001
+2025-11-01 00:03:34 - ERROR - Ошибка выполнения запроса: ОШИБКА:  оператор не существует: character varying == integer
+LINE 1: ..., registration_date FROM readers WHERE ticket_number == 1001
+                                                                ^
+HINT:  Оператор с данными именем и типами аргументов не найден. Возможно, вам следует добавить явные приведения типов.
+
+2025-11-01 00:03:34 - ERROR - Ошибка выполнения запроса: ОШИБКА:  оператор не существует: character varying == integer
+LINE 1: ..., registration_date FROM readers WHERE ticket_number == 1001
+                                                                ^
+HINT:  Оператор с данными именем и типами аргументов не найден. Возможно, вам следует добавить явные приведения типов.
+
+2025-11-01 00:05:44 - INFO - Соединение с БД закрыто
+2025-11-01 00:05:46 - INFO - Запуск приложения
+2025-11-01 00:05:48 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 00:05:48 - INFO - Подключение к БД test1 успешно
+2025-11-01 00:05:48 - INFO - Главное окно инициализировано
+2025-11-01 00:09:55 - INFO - Запуск приложения
+2025-11-01 00:09:59 - INFO - Запуск приложения
+2025-11-01 00:10:01 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 00:10:01 - INFO - Подключение к БД test1 успешно
+2025-11-01 00:10:02 - INFO - Главное окно инициализировано
+2025-11-01 00:10:14 - INFO - Соединение с БД закрыто
+2025-11-01 00:12:30 - INFO - Запуск приложения
+2025-11-01 00:12:31 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 00:12:31 - INFO - Подключение к БД test1 успешно
+2025-11-01 00:12:31 - INFO - Главное окно инициализировано
+2025-11-01 00:12:34 - ERROR - Ошибка выполнения запроса: ОШИБКА:  имя таблицы "authors" указано больше одного раза
+
+2025-11-01 00:12:36 - ERROR - Ошибка выполнения запроса: ОШИБКА:  имя таблицы "authors" указано больше одного раза
+
+2025-11-01 00:13:14 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues
+2025-11-01 00:13:38 - INFO - Выполняется запрос: SELECT COUNT(*), reader_id FROM issues GROUP BY reader_id
+2025-11-01 00:13:52 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues
+2025-11-01 00:14:22 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id > 1
+2025-11-01 00:14:28 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id = 1
+2025-11-01 00:14:36 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =1
+2025-11-01 00:14:40 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =2
+2025-11-01 00:15:54 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =1
+2025-11-01 00:16:08 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =1 and book_id = 1
+2025-11-01 00:16:41 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =1 
+2025-11-01 00:16:47 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =1 and book_id = 1
+2025-11-01 00:16:56 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =1
+2025-11-01 00:17:13 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =1 ORDER BY book_id ASC
+2025-11-01 00:17:17 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues WHERE reader_id =1 ORDER BY book_id DESC
+2025-11-01 00:17:54 - INFO - Выполняется запрос: SELECT issue_id, reader_id, book_id, issue_date, return_date FROM issues
+2025-11-01 00:18:08 - INFO - Выполняется запрос: SELECT COUNT(*), reader_id FROM issues GROUP BY reader_id
+2025-11-01 00:23:28 - INFO - Выполняется запрос: SELECT COUNT(*), reader_id FROM issues GROUP BY reader_id HAVING count = 1
+2025-11-01 00:23:28 - ERROR - Ошибка выполнения запроса: ОШИБКА:  столбец "count" не существует
+LINE 1: ...), reader_id FROM issues GROUP BY reader_id HAVING count = 1
+                                                              ^
+
+2025-11-01 00:23:28 - ERROR - Ошибка выполнения запроса: ОШИБКА:  столбец "count" не существует
+LINE 1: ...), reader_id FROM issues GROUP BY reader_id HAVING count = 1
+                                                              ^
+
+2025-11-01 00:23:48 - INFO - Выполняется запрос: SELECT COUNT(*), reader_id FROM issues GROUP BY reader_id HAVING reader_id = 1
+2025-11-01 00:23:56 - ERROR - Ошибка выполнения запроса: ОШИБКА:  имя таблицы "authors" указано больше одного раза
+
+2025-11-01 00:24:19 - INFO - Запуск приложения
+2025-11-01 00:24:20 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 00:24:20 - INFO - Подключение к БД test1 успешно
+2025-11-01 00:24:20 - INFO - Главное окно инициализировано
+2025-11-01 00:32:31 - INFO - Соединение с БД закрыто
+2025-11-01 00:44:12 - INFO - Запуск приложения
+2025-11-01 00:44:13 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 00:44:13 - INFO - Подключение к БД test1 успешно
+2025-11-01 00:44:14 - INFO - Главное окно инициализировано
+2025-11-01 00:44:39 - INFO - Соединение с БД закрыто
+2025-11-01 00:44:41 - INFO - Запуск приложения
+2025-11-01 00:44:42 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 00:44:42 - INFO - Подключение к БД test1 успешно
+2025-11-01 00:44:42 - INFO - Главное окно инициализировано
+2025-11-01 00:44:46 - INFO - Схема БД успешно удалена
+2025-11-01 00:44:46 - INFO - Схема БД успешно создана
+2025-11-01 00:44:49 - INFO - Тестовые данные успешно добавлены
+2025-11-01 00:44:49 - INFO - База данных успешно сброшена
+2025-11-01 00:45:50 - INFO - Запуск приложения
+2025-11-01 00:45:51 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 00:45:51 - INFO - Подключение к БД test1 успешно
+2025-11-01 00:45:51 - INFO - Главное окно инициализировано
+2025-11-01 01:31:27 - INFO - Запуск приложения
+2025-11-01 01:37:35 - INFO - Запуск приложения
+2025-11-01 01:37:37 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 01:37:37 - INFO - Подключение к БД test1 успешно
+2025-11-01 01:37:38 - INFO - Главное окно инициализировано
+2025-11-01 01:37:46 - INFO - Схема БД успешно удалена
+2025-11-01 01:37:46 - INFO - Схема БД успешно создана
+2025-11-01 01:37:50 - INFO - Соединение с БД закрыто
+2025-11-01 01:49:47 - INFO - Запуск приложения
+2025-11-01 01:49:49 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 01:49:49 - INFO - Подключение к БД test1 успешно
+2025-11-01 01:49:49 - INFO - Главное окно инициализировано
+2025-11-01 01:50:20 - INFO - Запуск приложения
+2025-11-01 01:50:20 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 01:50:20 - INFO - Подключение к БД test1 успешно
+2025-11-01 01:50:20 - INFO - Главное окно инициализировано
+2025-11-01 01:50:26 - INFO - Запуск приложения
+2025-11-01 01:50:28 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 01:50:28 - INFO - Подключение к БД test1 успешно
+2025-11-01 01:50:28 - INFO - Главное окно инициализировано
+2025-11-01 02:03:44 - INFO - Запуск приложения
+2025-11-01 02:03:46 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 02:03:46 - INFO - Подключение к БД test1 успешно
+2025-11-01 02:03:46 - INFO - Главное окно инициализировано
+2025-11-01 02:04:06 - INFO - Тестовые данные успешно добавлены
+2025-11-01 02:04:06 - INFO - База данных успешно сброшена
+2025-11-01 02:04:14 - INFO - Соединение с БД закрыто
+2025-11-01 02:04:16 - INFO - Запуск приложения
+2025-11-01 02:04:18 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 02:04:18 - INFO - Подключение к БД test1 успешно
+2025-11-01 02:04:19 - INFO - Главное окно инициализировано
+2025-11-01 02:04:25 - INFO - Схема БД успешно удалена
+2025-11-01 02:04:25 - INFO - Схема БД успешно создана
+2025-11-01 02:04:33 - INFO - Тестовые данные успешно добавлены
+2025-11-01 02:04:33 - INFO - База данных успешно сброшена
+2025-11-01 02:39:39 - INFO - Запуск приложения
+2025-11-01 02:39:41 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 02:39:41 - INFO - Подключение к БД test1 успешно
+2025-11-01 02:39:41 - INFO - Главное окно инициализировано
+2025-11-01 02:42:29 - INFO - Запуск приложения
+2025-11-01 02:42:30 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 02:42:31 - INFO - Подключение к БД test1 успешно
+2025-11-01 02:42:32 - INFO - Главное окно инициализировано
+2025-11-01 02:47:58 - ERROR - Ошибка получения авторов: ОШИБКА:  отношение "authors" не существует
+LINE 1: SELECT * FROM authors ORDER BY author_id
+                      ^
+
+2025-11-01 02:48:08 - ERROR - Ошибка получения списка таблиц: ОШИБКА:  текущая транзакция прервана, команды до конца блока транзакции игнорируются
+
+2025-11-01 02:48:19 - ERROR - Ошибка сброса схемы БД: ОШИБКА:  текущая транзакция прервана, команды до конца блока транзакции игнорируются
+
+2025-11-01 02:49:52 - INFO - Запуск приложения
+2025-11-01 02:49:52 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 02:49:52 - INFO - Подключение к БД test1 успешно
+2025-11-01 02:49:53 - INFO - Главное окно инициализировано
+2025-11-01 02:49:54 - ERROR - Ошибка получения авторов: ОШИБКА:  отношение "authors" не существует
+LINE 1: SELECT * FROM authors ORDER BY author_id
+                      ^
+
+2025-11-01 02:50:00 - ERROR - Ошибка сброса схемы БД: ОШИБКА:  текущая транзакция прервана, команды до конца блока транзакции игнорируются
+
+2025-11-01 02:50:54 - INFO - Отключение от базы данных и выход из программы
+2025-11-01 02:50:54 - INFO - Соединение с БД закрыто
+2025-11-01 02:50:54 - INFO - Соединение с БД закрыто
+2025-11-01 02:52:13 - INFO - Запуск приложения
+2025-11-01 02:52:21 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 02:52:21 - INFO - Подключение к БД test1 успешно
+2025-11-01 02:52:22 - INFO - Главное окно инициализировано
+2025-11-01 02:52:55 - INFO - Соединение с БД закрыто
+2025-11-01 02:53:30 - INFO - Запуск приложения
+2025-11-01 02:53:32 - INFO - Установлены параметры подключения: test1@localhost:5432
+2025-11-01 02:53:32 - INFO - Подключение к БД test1 успешно
+2025-11-01 02:53:32 - INFO - Главное окно инициализировано
+2025-11-01 02:55:46 - INFO - Соединение с БД закрыто

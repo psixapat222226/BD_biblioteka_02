@@ -3,6 +3,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QPushButton, Q
                                QGroupBox, QRadioButton, QCheckBox, QLineEdit)
 from PySide6.QtCore import Qt
 from ui.styles import get_button_style, get_combobox_style, get_table_style, get_input_fields_style
+import re
 
 
 class JoinWizardDialog(QDialog):
@@ -17,15 +18,7 @@ class JoinWizardDialog(QDialog):
         self.setWindowTitle("Мастер соединений (JOIN)")
         self.setMinimumSize(900, 600)
 
-        # Доступные таблицы и их поля
-        self.tables_info = {
-            "authors": ["author_id", "last_name", "first_name", "patronymic", "birth_year", "country"],
-            "books": ["book_id", "title", "publication_year", "genre", "isbn", "available_copies"],
-            "readers": ["reader_id", "last_name", "first_name", "patronymic", "ticket_number", "registration_date"],
-            "issues": ["issue_id", "book_id", "reader_id", "issue_date", "return_date"],
-            "book_authors": ["book_id", "author_id"]
-        }
-
+        # Больше не храним жестко столбцы — всё тянем из БД динамически
         self.setup_ui()
         self.selected_columns = []  # Хранит выбранные столбцы для запроса
 
@@ -41,7 +34,6 @@ class JoinWizardDialog(QDialog):
         left_table_layout = QVBoxLayout(left_table_group)
 
         self.left_table_combo = QComboBox()
-        self.left_table_combo.addItems(self.tables_info.keys())
         self.left_table_combo.setStyleSheet(get_combobox_style())
         self.left_table_combo.currentTextChanged.connect(self.update_left_columns)
         left_table_layout.addWidget(QLabel("Выберите первую таблицу:"))
@@ -76,7 +68,6 @@ class JoinWizardDialog(QDialog):
         right_table_layout = QVBoxLayout(right_table_group)
 
         self.right_table_combo = QComboBox()
-        self.right_table_combo.addItems(self.tables_info.keys())
         self.right_table_combo.setStyleSheet(get_combobox_style())
         self.right_table_combo.currentTextChanged.connect(self.update_right_columns)
         right_table_layout.addWidget(QLabel("Выберите вторую таблицу:"))
@@ -154,26 +145,36 @@ class JoinWizardDialog(QDialog):
 
         main_layout.addLayout(buttons_layout)
 
-        # Инициализация списков столбцов
-        self.update_left_columns(self.left_table_combo.currentText())
-        self.update_right_columns(self.right_table_combo.currentText())
+        # Инициализация списков таблиц/столбцов
+        self.reload_tables()
+
+    def reload_tables(self):
+        """Загружает список таблиц и заполняет комбобоксы."""
+        tables = self.controller.get_tables() or []
+        self.left_table_combo.clear()
+        self.right_table_combo.clear()
+        self.left_table_combo.addItems(tables)
+        self.right_table_combo.addItems(tables)
+
+        # Триггеры обновят столбцы
+        if tables:
+            self.update_left_columns(self.left_table_combo.currentText())
+            self.update_right_columns(self.right_table_combo.currentText())
 
     def update_left_columns(self, table_name):
         """Обновление списка столбцов левой таблицы."""
         self.left_column_combo.clear()
         self.clear_layout(self.left_columns_layout)
 
-        if table_name in self.tables_info:
-            columns = self.tables_info[table_name]
+        if table_name:
+            columns = self.controller.get_table_columns(table_name) or []
             self.left_column_combo.addItems(columns)
 
-            # Создаем чекбоксы для выбора столбцов
             for column in columns:
                 checkbox = QCheckBox(f"{table_name}.{column}")
                 checkbox.setChecked(True)  # По умолчанию выбраны все
                 self.left_columns_layout.addWidget(checkbox)
 
-            # Обновляем список полей для фильтрации
             self.update_filter_columns()
 
     def update_right_columns(self, table_name):
@@ -181,17 +182,15 @@ class JoinWizardDialog(QDialog):
         self.right_column_combo.clear()
         self.clear_layout(self.right_columns_layout)
 
-        if table_name in self.tables_info:
-            columns = self.tables_info[table_name]
+        if table_name:
+            columns = self.controller.get_table_columns(table_name) or []
             self.right_column_combo.addItems(columns)
 
-            # Создаем чекбоксы для выбора столбцов
             for column in columns:
                 checkbox = QCheckBox(f"{table_name}.{column}")
-                checkbox.setChecked(True)  # По умолчанию выбраны все
+                checkbox.setChecked(True)
                 self.right_columns_layout.addWidget(checkbox)
 
-            # Обновляем список полей для фильтрации
             self.update_filter_columns()
 
     def update_filter_columns(self):
@@ -201,25 +200,23 @@ class JoinWizardDialog(QDialog):
         left_table = self.left_table_combo.currentText()
         right_table = self.right_table_combo.currentText()
 
-        if left_table in self.tables_info and right_table in self.tables_info:
-            # Добавляем столбцы обеих таблиц с префиксами
-            for column in self.tables_info[left_table]:
+        if left_table:
+            for column in self.controller.get_table_columns(left_table) or []:
                 self.filter_column_combo.addItem(f"{left_table}.{column}")
 
-            for column in self.tables_info[right_table]:
+        if right_table:
+            for column in self.controller.get_table_columns(right_table) or []:
                 self.filter_column_combo.addItem(f"{right_table}.{column}")
 
     def get_selected_columns(self):
         """Получение выбранных столбцов из чекбоксов."""
         selected_columns = []
 
-        # Левая таблица
         for i in range(self.left_columns_layout.count()):
             checkbox = self.left_columns_layout.itemAt(i).widget()
             if isinstance(checkbox, QCheckBox) and checkbox.isChecked():
                 selected_columns.append(checkbox.text())
 
-        # Правая таблица
         for i in range(self.right_columns_layout.count()):
             checkbox = self.right_columns_layout.itemAt(i).widget()
             if isinstance(checkbox, QCheckBox) and checkbox.isChecked():
@@ -249,28 +246,39 @@ class JoinWizardDialog(QDialog):
 
         selected_columns = self.get_selected_columns()
         if not selected_columns:
-            selected_columns = ["*"]  # Если ничего не выбрано, выбираем все
+            selected_columns = ["*"]
 
-        # Начинаем составлять запрос
-        query = f"SELECT {', '.join(selected_columns)} FROM {left_table} {join_type} {right_table} ON {left_table}.{left_column} = {right_table}.{right_column}"
+        query = (
+            f"SELECT {', '.join(selected_columns)} "
+            f"FROM {left_table} {join_type} {right_table} "
+            f"ON {left_table}.{left_column} = {right_table}.{right_column}"
+        )
 
-        # Добавляем условие WHERE, если задано
         filter_column = self.filter_column_combo.currentText()
         filter_operator = self.filter_operator_combo.currentText()
         filter_value = self.filter_value_edit.text().strip()
 
-        if filter_column and filter_value and filter_operator not in ["IS NULL", "IS NOT NULL"]:
+        def is_numeric(val: str) -> bool:
+            return bool(re.fullmatch(r"-?\d+(\.\d+)?", val))
+
+        if filter_column and filter_operator not in ["IS NULL", "IS NOT NULL"]:
+            if not filter_value:
+                return query
+
             query += f" WHERE {filter_column} {filter_operator} "
 
-            # В зависимости от оператора, обрабатываем значение
-            if filter_operator == "LIKE" or filter_operator == "NOT LIKE":
+            if filter_operator in ("LIKE", "NOT LIKE"):
                 query += f"'%{filter_value}%'"
-            elif filter_operator == "IN" or filter_operator == "NOT IN":
-                values = [item.strip() for item in filter_value.split(",")]
-                query += f"({', '.join([f'\'{value}\'' for value in values])})"
+            elif filter_operator in ("IN", "NOT IN"):
+                values = [item.strip() for item in filter_value.split(",") if item.strip()]
+                normalized = [v if is_numeric(v) else f"'{v}'" for v in values]
+                query += f"({', '.join(normalized)})"
             else:
-                query += f"'{filter_value}'"
-        elif filter_column and (filter_operator == "IS NULL" or filter_operator == "IS NOT NULL"):
+                if is_numeric(filter_value):
+                    query += filter_value
+                else:
+                    query += f"'{filter_value}'"
+        elif filter_column and filter_operator in ("IS NULL", "IS NOT NULL"):
             query += f" WHERE {filter_column} {filter_operator}"
 
         return query
@@ -279,7 +287,6 @@ class JoinWizardDialog(QDialog):
         """Очищает все виджеты из layout."""
         if layout is None:
             return
-
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()
@@ -291,32 +298,33 @@ class JoinWizardDialog(QDialog):
         query = self.build_query()
 
         try:
-            self.controller.cursor.execute(query)
-            results = self.controller.cursor.fetchall()
+            results = self.controller.execute_custom_request(query)
 
-            # Очищаем таблицу результатов
             self.result_table.clear()
 
             if results:
-                # Настраиваем заголовки
-                column_names = [desc[0] for desc in self.controller.cursor.description]
+                column_names = list(results[0].keys())
                 self.result_table.setColumnCount(len(column_names))
                 self.result_table.setHorizontalHeaderLabels(column_names)
 
-                # Заполняем таблицу данными
                 self.result_table.setRowCount(len(results))
                 for i, row in enumerate(results):
-                    for j, value in enumerate(row):
-                        item = QTableWidgetItem(str(value) if value is not None else "")
+                    for j, col in enumerate(column_names):
+                        val = row.get(col)
+                        item = QTableWidgetItem("" if val is None else str(val))
                         self.result_table.setItem(i, j, item)
 
-                # Включаем сортировку
                 self.result_table.setSortingEnabled(True)
-
                 QMessageBox.information(self, "Успех", f"Запрос успешно выполнен. Найдено записей: {len(results)}")
             else:
                 self.result_table.setRowCount(0)
+                self.result_table.setColumnCount(0)
                 QMessageBox.information(self, "Результат", "Запрос выполнен, но не найдено подходящих записей.")
-
         except Exception as e:
+            # Снимаем состояние aborted на всякий случай
+            try:
+                if hasattr(self.controller, "connection") and self.controller.connection:
+                    self.controller.connection.rollback()
+            except Exception:
+                pass
             QMessageBox.critical(self, "Ошибка", f"Ошибка выполнения запроса:\n{str(e)}")

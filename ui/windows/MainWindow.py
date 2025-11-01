@@ -95,6 +95,10 @@ class MainWindow(QMainWindow):
         self.reset_schema_btn.clicked.connect(self.reset_schema)
         bottom_btn_layout.addWidget(self.reset_schema_btn)
 
+        self.alter_table_btn = QPushButton("Управление структурой БД")
+        self.alter_table_btn.clicked.connect(self.open_alter_table_dialog)
+        bottom_btn_layout.addWidget(self.alter_table_btn)
+
         # Кнопка отключения от БД
         self.disconnect_btn = QPushButton("Отключиться от БД")
         self.disconnect_btn.setFixedWidth(160)
@@ -102,6 +106,21 @@ class MainWindow(QMainWindow):
         bottom_btn_layout.addWidget(self.disconnect_btn)
         bottom_btn_layout.addStretch()
         main_layout.addLayout(bottom_btn_layout)
+
+    def open_alter_table_dialog(self):
+        """Открыть диалог управления структурой БД"""
+        from ui.dialogs.alter_table_dialog import AlterTableDialog
+
+        # Получаем подключение из controller (как это делается в других методах)
+        if hasattr(self.controller, 'cursor') and self.controller.cursor:
+            # Получаем connection из cursor
+            db_connection = self.controller.cursor.connection
+            dialog = AlterTableDialog(db_connection, self)
+            dialog.exec()
+        else:
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "Ошибка",
+                                "Нет активного подключения к базе данных. Подключитесь к БД сначала.")
 
     def apply_dark_theme(self):
         # Применение темной темы
@@ -132,10 +151,9 @@ class MainWindow(QMainWindow):
         """Настройка панели кнопок главного окна."""
         buttons_layout = QHBoxLayout()
 
-       # Создаем единую кнопку "Таблицы" с выпадающим меню
+        # Создаем единую кнопку "Таблицы" с выпадающим меню
         self.tables_menu = QMenu(self)
 
-        # Добавляем действия для каждой таблицы
         authors_action = QAction("Авторы", self)
         authors_action.triggered.connect(lambda: self.show_table(TableType.AUTHORS))
         self.tables_menu.addAction(authors_action)
@@ -156,11 +174,13 @@ class MainWindow(QMainWindow):
         book_authors_action.triggered.connect(lambda: self.show_table(TableType.BOOK_AUTHORS))
         self.tables_menu.addAction(book_authors_action)
 
-        # Создаем кнопку "Таблицы" и устанавливаем для нее меню
+        # Новый пункт: динамический обозреватель
+        table_viewer_action = QAction("Обозреватель таблиц (динамич.)", self)
+        table_viewer_action.triggered.connect(self.show_table_viewer)
+        self.tables_menu.addAction(table_viewer_action)
+
         self.tables_btn = QPushButton("Таблицы")
         self.tables_btn.setMenu(self.tables_menu)
-
-        # Скрываем индикатор меню (белый треугольник)
         self.tables_btn.setStyleSheet("""
             QPushButton::menu-indicator { 
                 image: none; 
@@ -171,18 +191,21 @@ class MainWindow(QMainWindow):
 
         buttons_layout.addWidget(self.tables_btn)
 
-        # Добавление кнопки JOIN справа от кнопки Таблицы
         self.join_btn = QPushButton("JOIN")
         self.join_btn.clicked.connect(self.show_join_wizard)
         buttons_layout.addWidget(self.join_btn)
 
-        # Кнопка для построителя запросов
         self.request_builder_btn = QPushButton("SELECT")
         self.request_builder_btn.clicked.connect(self.show_request_builder)
         buttons_layout.addWidget(self.request_builder_btn)
 
         main_layout.addLayout(buttons_layout)
 
+    def show_table_viewer(self):
+        """Открывает динамический обозреватель таблиц."""
+        from ui.dialogs.table_viewer import TableViewerDialog
+        dialog = TableViewerDialog(self.controller, self)
+        dialog.exec()
     def load_logs(self):
         """Загрузка содержимого лог-файла в окно логов."""
         try:

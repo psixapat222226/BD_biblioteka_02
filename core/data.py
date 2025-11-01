@@ -750,3 +750,81 @@ class DatabaseManager:
             self.connection.rollback()
             self.logger.error(f"Ошибка удаления автора: {str(e)}")
             return False, str(e)
+
+    # ==== ДОБАВЛЕНО: методы для построителя запросов и служебные ====
+
+    def execute_custom_request(self, sql_query: str):
+        """
+        Выполнить произвольный SELECT-запрос и вернуть список словарей.
+        В случае ошибки делает rollback, чтобы снять состояние aborted.
+        """
+        try:
+            self.cursor.execute(sql_query)
+            # Если запрос не возвращает данных (не SELECT) — description может быть None
+            if self.cursor.description:
+                rows = self.cursor.fetchall()
+                return [dict(r) for r in rows]
+            return []
+        except Exception as e:
+            # Сбрасываем транзакцию, чтобы последующие запросы работали
+            try:
+                if self.connection:
+                    self.connection.rollback()
+            except Exception:
+                pass
+            self.logger.error(f"Ошибка выполнения запроса: {e}")
+            raise
+
+    def get_table_columns(self, table_name: str):
+        """
+        Получить список колонок таблицы (в порядке ordinal_position).
+        """
+        try:
+            self.cursor.execute("""
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = %s
+                ORDER BY ordinal_position
+            """, (table_name,))
+            return [row['column_name'] for row in self.cursor.fetchall()]
+        except Exception as e:
+            self.logger.error(f"Ошибка получения списка колонок для {table_name}: {e}")
+            return []
+
+    def get_numeric_columns(self, table_name: str):
+        """
+        Получить список числовых колонок таблицы (для SUM/AVG/MAX/MIN).
+        """
+        try:
+            self.cursor.execute("""
+                SELECT column_name, data_type
+                FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = %s
+            """, (table_name,))
+            numeric_types = {
+                'smallint', 'integer', 'bigint',
+                'decimal', 'numeric', 'real', 'double precision'
+            }
+            result = []
+            for row in self.cursor.fetchall():
+                if row['data_type'] in numeric_types:
+                    result.append(row['column_name'])
+            return result
+        except Exception as e:
+            self.logger.error(f"Ошибка получения числовых колонок для {table_name}: {e}")
+            return []
+    def get_tables(self):
+        """
+        Возвращает список всех пользовательских таблиц (public schema).
+        """
+        try:
+            self.cursor.execute("""
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+                ORDER BY table_name
+            """)
+            return [row['table_name'] for row in self.cursor.fetchall()]
+        except Exception as e:
+            self.logger.error(f"Ошибка получения списка таблиц: {e}")
+            return []

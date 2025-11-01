@@ -148,7 +148,7 @@ class ReadersDialog(QDialog):
                 self.update_readers_table()
                 QMessageBox.information(self, "Успех", "Читатель успешно обновлен")
             else:
-                QMessageBox.warning(self, "Ошибка", f"Не удалось обновить итателя: {message}")
+                QMessageBox.warning(self, "Ошибка", f"Не удалось обновить читателя: {message}")
 
     def delete_reader(self):
         """Удаление выбранного читателя"""
