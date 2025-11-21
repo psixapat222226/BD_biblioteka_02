@@ -64,7 +64,8 @@ class TextValidator:
         """
         return bool(re.match(r'^[а-яА-Яa-zA-Z0-9\s]*$', text))
 
-class RequestBuilder: #Класс для построения SQL-запросов (запросов к БД)
+class RequestBuilder:
+    """Класс для построения SQL-запросов с поддержкой сложных конструкций"""
     
     def __init__(self):
         self.reset()
@@ -76,7 +77,8 @@ class RequestBuilder: #Класс для построения SQL-запросо
         self._order_by = []
         self._group_by = []
         self._having = []
-        self._aggregate = None
+        self._aggregates = []
+        self._joins = []
     
     def select(self, columns):
         if isinstance(columns, str):
@@ -105,37 +107,58 @@ class RequestBuilder: #Класс для построения SQL-запросо
         self._having.append(condition)
         return self
     
-    def aggregate(self, function, column):
-        self._aggregate = f"{function}({column})"
+    def aggregate_custom(self, aggregate_expression):
+        """Добавляет произвольное агрегатное выражение"""
+        self._aggregates.append(aggregate_expression)
+        return self
+    
+    def join(self, table, condition, join_type="INNER"):
+        """Добавляет JOIN"""
+        self._joins.append(f"{join_type} JOIN {table} ON {condition}")
         return self
     
     def build(self):
-        if self._group_by and not self._aggregate:
-            self._aggregate = "COUNT(*)"
-        if not self._select and not self._aggregate:
-            self._select = ["*"]
+        """Построение итогового SQL-запроса"""
+        sql_parts = []
         
-        sql = "SELECT "
+        # SELECT часть
+        select_parts = []
         
-        if self._aggregate:
-            sql += self._aggregate
-            if self._select:
-                sql += ", " + ", ".join(self._select)
-        else:
-            sql += ", ".join(self._select) if self._select else "*"
+        # Добавляем обычные столбцы
+        if self._select:
+            select_parts.extend(self._select)
         
-        sql += f" FROM {self._from}"
+        # Добавляем агрегатные функции
+        if self._aggregates:
+            select_parts.extend(self._aggregates)
         
+        if not select_parts:
+            select_parts = ["*"]
+        
+        sql_parts.append(f"SELECT {', '.join(select_parts)}")
+        
+        # FROM часть
+        if self._from:
+            sql_parts.append(f"FROM {self._from}")
+        
+        # JOIN части
+        if self._joins:
+            sql_parts.extend(self._joins)
+        
+        # WHERE часть
         if self._where:
-            sql += " WHERE " + " AND ".join(self._where)
+            sql_parts.append(f"WHERE {' AND '.join(self._where)}")
         
+        # GROUP BY часть
         if self._group_by:
-            sql += " GROUP BY " + ", ".join(self._group_by)
+            sql_parts.append(f"GROUP BY {', '.join(self._group_by)}")
         
+        # HAVING часть
         if self._having:
-            sql += " HAVING " + " AND ".join(self._having)
+            sql_parts.append(f"HAVING {' AND '.join(self._having)}")
         
+        # ORDER BY часть
         if self._order_by:
-            sql += " ORDER BY " + ", ".join(self._order_by)
+            sql_parts.append(f"ORDER BY {', '.join(self._order_by)}")
         
-        return sql
+        return " ".join(sql_parts)
