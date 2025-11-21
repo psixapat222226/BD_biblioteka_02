@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         self.controller = controller
         self.logger = Logger()
         self.dark_theme_enabled = False
-
+        
         self.setWindowTitle("Библиотека")
         self.setMinimumSize(900, 600)
         # Инициализация интерфейса
@@ -146,6 +146,13 @@ class MainWindow(QMainWindow):
             self.set_application_style()  # Вернуть стандартную тему
             self.logger.info(f"Тема изменена на светлую")
             self.theme_btn.setText("Темная тема")
+        self.update_open_dialogs()
+
+    def update_open_dialogs(self):
+        """Обновляет тему всех открытых диалоговых окон."""
+        for dialog in self.findChildren(QDialog):
+            if hasattr(dialog, 'apply_theme'):
+                dialog.apply_theme()
 
     def setup_buttons(self, main_layout):
         """Настройка панели кнопок главного окна."""
