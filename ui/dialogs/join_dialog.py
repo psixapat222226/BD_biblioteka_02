@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QPushButton, Q
                                QTableWidget, QTableWidgetItem, QHeaderView, QMessageBox,
                                QGroupBox, QRadioButton, QCheckBox, QLineEdit)
 from PySide6.QtCore import Qt
-from ui.styles import get_button_style, get_combobox_style, get_table_style, get_input_fields_style
+from ui.styles import get_button_style, get_combobox_style, get_table_style, get_input_fields_style,get_dark_theme_style,get_light_theme_style
 import re
 
 
@@ -15,12 +15,25 @@ class JoinWizardDialog(QDialog):
     def __init__(self, controller, parent=None):
         super().__init__(parent)
         self.controller = controller
+        self.parent=parent
         self.setWindowTitle("Мастер соединений (JOIN)")
-        self.setMinimumSize(1200, 800)
+        self.setMinimumSize(900, 600)
 
         # Больше не храним жестко столбцы — всё тянем из БД динамически
         self.setup_ui()
         self.selected_columns = []  # Хранит выбранные столбцы для запроса
+    
+    def apply_theme(self):
+        """Применяет текущую тему ко всем элементам диалога."""
+        if hasattr(self.parent, 'dark_theme_enabled') and self.parent.dark_theme_enabled:
+            self.setStyleSheet(get_dark_theme_style())
+        else:
+            self.setStyleSheet(get_light_theme_style())
+
+    def showEvent(self, event):
+        """Обработчик события показа диалога."""
+        super().showEvent(event)
+        self.apply_theme()
 
     def setup_ui(self):
         """Настройка пользовательского интерфейса."""
@@ -34,13 +47,11 @@ class JoinWizardDialog(QDialog):
         left_table_layout = QVBoxLayout(left_table_group)
 
         self.left_table_combo = QComboBox()
-        self.left_table_combo.setStyleSheet(get_combobox_style())
         self.left_table_combo.currentTextChanged.connect(self.update_left_columns)
         left_table_layout.addWidget(QLabel("Выберите первую таблицу:"))
         left_table_layout.addWidget(self.left_table_combo)
 
         self.left_column_combo = QComboBox()
-        self.left_column_combo.setStyleSheet(get_combobox_style())
         left_table_layout.addWidget(QLabel("Поле для соединения:"))
         left_table_layout.addWidget(self.left_column_combo)
 
@@ -68,13 +79,10 @@ class JoinWizardDialog(QDialog):
         right_table_layout = QVBoxLayout(right_table_group)
 
         self.right_table_combo = QComboBox()
-        self.right_table_combo.setStyleSheet(get_combobox_style())
         self.right_table_combo.currentTextChanged.connect(self.update_right_columns)
         right_table_layout.addWidget(QLabel("Выберите вторую таблицу:"))
         right_table_layout.addWidget(self.right_table_combo)
-
         self.right_column_combo = QComboBox()
-        self.right_column_combo.setStyleSheet(get_combobox_style())
         right_table_layout.addWidget(QLabel("Поле для соединения:"))
         right_table_layout.addWidget(self.right_column_combo)
 
@@ -103,19 +111,16 @@ class JoinWizardDialog(QDialog):
         filter_layout = QHBoxLayout(filter_group)
 
         self.filter_column_combo = QComboBox()
-        self.filter_column_combo.setStyleSheet(get_combobox_style())
         filter_layout.addWidget(QLabel("Поле:"))
         filter_layout.addWidget(self.filter_column_combo)
 
         self.filter_operator_combo = QComboBox()
         self.filter_operator_combo.addItems(
             ["=", ">", "<", ">=", "<=", "LIKE", "NOT LIKE", "IN", "NOT IN", "IS NULL", "IS NOT NULL"])
-        self.filter_operator_combo.setStyleSheet(get_combobox_style())
         filter_layout.addWidget(QLabel("Оператор:"))
         filter_layout.addWidget(self.filter_operator_combo)
 
         self.filter_value_edit = QLineEdit()
-        self.filter_value_edit.setStyleSheet(get_input_fields_style())
         filter_layout.addWidget(QLabel("Значение:"))
         filter_layout.addWidget(self.filter_value_edit)
 
@@ -126,7 +131,6 @@ class JoinWizardDialog(QDialog):
         main_layout.addWidget(result_label)
 
         self.result_table = QTableWidget()
-        self.result_table.setStyleSheet(get_table_style())
         self.result_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         main_layout.addWidget(self.result_table)
 
@@ -135,12 +139,10 @@ class JoinWizardDialog(QDialog):
 
         self.execute_btn = QPushButton("Выполнить запрос")
         self.execute_btn.clicked.connect(self.execute_query)
-        self.execute_btn.setStyleSheet(get_button_style())
         buttons_layout.addWidget(self.execute_btn)
 
         self.close_btn = QPushButton("Закрыть")
         self.close_btn.clicked.connect(self.accept)
-        self.close_btn.setStyleSheet(get_button_style())
         buttons_layout.addWidget(self.close_btn)
 
         main_layout.addLayout(buttons_layout)
